@@ -23,7 +23,7 @@ namespace FormulaTestCases
         [ExpectedException(typeof(FormulaFormatException))]
         public void Construct1()
         {
-            Formula f = new Formula("_");
+            Formula f = new Formula("*5");
         }
 
         /// <summary>
@@ -47,6 +47,39 @@ namespace FormulaTestCases
         }
 
         /// <summary>
+        /// This is another syntax error
+        /// </summary>
+        [TestMethod]
+        public void Construct4()
+        {
+            Formula f = new Formula("((2+4)*x5)");
+        }
+
+        /// <summary>
+        /// This is another syntax error
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Construct5()
+        {
+            Formula f = new Formula("-5+3");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Construct6()
+        {
+            Formula f = new Formula("(5+3))");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Construct7()
+        {
+            Formula f = new Formula("?");
+        }
+
+        /// <summary>
         /// Makes sure that "2+3" evaluates to 5.  Since the Formula
         /// contains no variables, the delegate passed in as the
         /// parameter doesn't matter.  We are passing in one that
@@ -57,6 +90,19 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("2+3");
             Assert.AreEqual(f.Evaluate(v => 0), 5.0, 1e-6);
+        }
+
+        /// <summary>
+        /// Makes sure that "2+3" evaluates to 5.  Since the Formula
+        /// contains no variables, the delegate passed in as the
+        /// parameter doesn't matter.  We are passing in one that
+        /// maps all variables to zero.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate1minus()
+        {
+            Formula f = new Formula("3-2");
+            Assert.AreEqual(f.Evaluate(v => 0), 1.0, 1e-6);
         }
 
         /// <summary>
@@ -105,6 +151,72 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("(x + y) * (z / x) * 1.0");
             Assert.AreEqual(f.Evaluate(Lookup4), 20.0, 1e-6);
+        }
+
+        /// <summary>
+        /// Makes sure that "2*3" evaluates to 6.  Since the Formula
+        /// contains no variables, the delegate passed in as the
+        /// parameter doesn't matter.  We are passing in one that
+        /// maps all variables to zero.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate6()
+        {
+            Formula f = new Formula("2*3");
+            Assert.AreEqual(f.Evaluate(v => 0), 6.0, 1e-6);
+        }
+
+        /// <summary>
+        /// Makes sure that "8/2" evaluates to 4.  Since the Formula
+        /// contains no variables, the delegate passed in as the
+        /// parameter doesn't matter.  We are passing in one that
+        /// maps all variables to zero.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate7()
+        {
+            Formula f = new Formula("8/2");
+            Assert.AreEqual(f.Evaluate(v => 0), 4.0, 1e-6);
+        }
+
+        /// <summary>
+        /// Makes sure that "8/2" evaluates to 4.  Since the Formula
+        /// contains no variables, the delegate passed in as the
+        /// parameter doesn't matter.  We are passing in one that
+        /// maps all variables to zero.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FormulaEvaluationException))]
+        public void Evaluate8()
+        {
+            Formula f = new Formula("8/0");
+            Assert.AreEqual(f.Evaluate(v => 0), 4.0, 1e-6);
+        }
+
+        /// <summary>
+        /// Makes sure that "2+3" evaluates to 5.  Since the Formula
+        /// contains no variables, the delegate passed in as the
+        /// parameter doesn't matter.  We are passing in one that
+        /// maps all variables to zero.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate9()
+        {
+            Formula f = new Formula("2+3+(5+7)-2+5");
+            Assert.AreEqual(f.Evaluate(v => 0), 20.0, 1e-6);
+        }
+
+        /// <summary>
+        /// The Formula consists of a single variable (x5).  The value of
+        /// the Formula depends on the value of x5, which is determined by
+        /// the delegate passed to Evaluate.  Since this delegate maps all
+        /// variables to 22.5, the return value should be 22.5.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate10()
+        {
+            Formula f = new Formula("5");
+            Assert.AreEqual(f.Evaluate(v => 22.5), 5.0, 1e-6);
         }
 
         /// <summary>
