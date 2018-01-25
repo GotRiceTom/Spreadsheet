@@ -1,4 +1,5 @@
 ﻿// Skeleton written by Joe Zachary for CS 3500, January 2017
+// Filled in by Eric Naegle u0725372 1/24/2018
 
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,9 @@ namespace Formulas
     /// </summary>
     public class Formula
     {
-        //AM I SUPPOSED TO DO private IEnumerator<string> tokens; HERE?
         private string formulaString;
+
+        //previous, and the number of parenthesis, is necessary for formula formatting
         private int openParens, closeParens;
         private string previous;
 
@@ -42,17 +44,17 @@ namespace Formulas
         /// </summary>
         public Formula(String formula)
         {
-            this.previous = "first";
+            //I have to initialize this to something.
+            this.previous = null;
+
             //check if the parameter is null
             if (formula == null)
                 throw new FormulaFormatException("The formula cannot be null.");
             
-            //saved for Evaluate
+            //saved for the Evaluate function
             this.formulaString = formula;
 
             var tokens = GetTokens(formula);
-            //var theEnumerator = tokens.GetEnumerator(); Do I need to use this?-------------------------------------------------------------------------------------------------
-            //do I need to allow 4.5e+7?
 
             bool isFirstVariable = true;
             foreach (string token in tokens)
@@ -137,7 +139,7 @@ namespace Formulas
 
             //check final number of parenthesis
             if (!(openParens == closeParens))
-                throw new FormulaFormatException("Number of open and closign parenthesis don't match.");
+                throw new FormulaFormatException("Number of open and closing parenthesis don't match.");
         }
         /// <summary>
         /// Evaluates this Formula, using the Lookup delegate to determine the values of variables.  (The
@@ -150,62 +152,85 @@ namespace Formulas
         /// </summary>
         public double Evaluate(Lookup lookup)
         {
+            //create the fields necessary
             var tokens = GetTokens(formulaString);
             Stack<double> values = new Stack<double>();
             Stack<String> operators = new Stack<String>();
             openParens = 0;
             closeParens = 0;
 
-            foreach(string theToken in tokens)
+            foreach(string token in tokens)
             {
-                string theToken = token;
-                //if t is a variable
-                char[] letters = theToken.ToCharArray();
+                //if the token is a variable
+                char[] letters = token.ToCharArray();
                 if (char.IsLetter(letters[0]))
                 {
-                    theToken = lookup(theToken);
-                }
-
-                //if the token is a double
-                if (double.TryParse(theToken,out double unused))
-                {
+                    double tokenDouble = lookup(token);
                     if ((operators.Count == 0) || (operators.Peek() == "+") || (operators.Peek() == "-") || (operators.Peek() == "(") || operators.Peek() == ")")
                     {
-                        values.Push(double.Parse(theToken));
+                        values.Push((tokenDouble));
                     }
 
                     else if (operators.Peek() == "*")
                     {
-                        double product = values.Pop() * double.Parse(theToken);
+                        double product = values.Pop() * (tokenDouble);
                         operators.Pop();
                         values.Push(product);
                     }
 
                     else if (operators.Peek() == "/")
                     {
-                        if (double.Parse(theToken) == 0.0)
+                        if (tokenDouble == 0.0)
                             throw new FormulaEvaluationException("You cannot divide by zero.");
 
-                        double quotient = values.Pop() / double.Parse(theToken);
+                        double quotient = values.Pop() / (tokenDouble);
+                        operators.Pop();
+                        values.Push(quotient);
+                    }
+                }
+
+                //if the token is a double
+                else if (double.TryParse(token,out double unused2))
+                {
+                    if ((operators.Count == 0) || (operators.Peek() == "+") || (operators.Peek() == "-") || (operators.Peek() == "(") || operators.Peek() == ")")
+                    {
+                        values.Push(double.Parse(token));
+                    }
+
+                    else if (operators.Peek() == "*")
+                    {
+                        double product = values.Pop() * double.Parse(token);
+                        operators.Pop();
+                        values.Push(product);
+                    }
+
+                    else if (operators.Peek() == "/")
+                    {
+                        if (double.Parse(token) == 0.0)
+                            throw new FormulaEvaluationException("You cannot divide by zero.");
+
+                        double quotient = values.Pop() / double.Parse(token);
                         operators.Pop();
                         values.Push(quotient);
                     }
                 }
 
                 //if the token is a *, /, or (, we just push it onto the stack
-                if ((theToken == "*") || (theToken == "/"))
-                    operators.Push(theToken);
-                if (theToken == "(")
+                else if ((token == "*") || (token == "/"))
                 {
-                    operators.Push(theToken);
+                    operators.Push(token);
+                }
+                else if (token == "(")
+                {
+                    operators.Push(token);
                     openParens++;
                 }
 
                 //if the token is a + or -
-                if ((theToken == "+") || (theToken == "-"))
+                else if ((token == "+") || (token == "-"))
                 {
                     if (operators.Count == 0)
-                        operators.Push(theToken);
+                        operators.Push(token);
 
                     else if (operators.Peek() == "+")
                     {
@@ -225,12 +250,16 @@ namespace Formulas
                         values.Push(first - second);
                     }
 
-                    operators.Push(theToken);
+                    operators.Push(token);
                 }
 
-                //if the token is a )
-                if ((theToken == ")"))
+                //if the token is a ")"
+                else if ((token == ")"))
                 {
+                    closeParens++;
+                    if (closeParens > openParens)
+                        throw new FormulaFormatException("There are close parenthesis for which there are no open parenthesis.");
+
                     if (operators.Peek() == "+")
                     {
                         double second = values.Pop();
@@ -240,6 +269,8 @@ namespace Formulas
                         values.Push(first + second);
                     }
 
+                    //...in hindsight I should have learned how to use switch statements...
+                    //I'll do it next time.
                     else if (operators.Peek() == "-")
                     {
                         double second = values.Pop();
@@ -251,14 +282,14 @@ namespace Formulas
 
                     operators.Pop();
 
-                    if (operators.Peek() == "*")
+                    if ((operators.Count > 0) && (operators.Peek() == "*"))
                     {
                         double product = values.Pop() * values.Pop();
                         operators.Pop();
                         values.Push(product);
                     }
 
-                    else if (operators.Peek() == "/")
+                    else if ((operators.Count > 0) && (operators.Peek() == "/"))
                     {
                         double second = values.Pop();
                         double first = values.Pop();
@@ -272,10 +303,11 @@ namespace Formulas
                 }
             }
 
-            //at the very end
+            //at the very end, return the value if we're done...
             if (operators.Count == 0)
                 return values.Pop();
 
+            //...otherwise do the last bit of math and then return.
             else
             {
                 double second = values.Pop();
@@ -359,6 +391,7 @@ namespace Formulas
         public UndefinedVariableException(String variable)
             : base(variable)
         {
+            throw new FormulaEvaluationException(variable + " is not valid.");
         }
     }
 

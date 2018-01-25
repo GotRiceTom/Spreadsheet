@@ -1,4 +1,5 @@
 ﻿// Written by Joe Zachary for CS 3500, January 2017.
+// Extended by Eric Naegle u0725372 1/24/2018
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +12,8 @@ namespace FormulaTestCases
     /// client code can make use of the Formula class, and to show you how to create your
     /// own (which we strongly recommend).  To run them, pull down the Test menu and do
     /// Run > All Tests.
+    /// 
+    /// I added additional tests to make sure everything is good to go.
     /// </summary>
     [TestClass]
     public class UnitTests
@@ -144,6 +147,17 @@ namespace FormulaTestCases
         }
 
         /// <summary>
+        /// The delegate passed to Evaluate is defined below.  We check
+        /// that evaluating the formula returns in 10.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate42()
+        {
+            Formula f = new Formula("x + y + z");
+            Assert.AreEqual(f.Evaluate(Lookup4), 18.0, 1e-6);
+        }
+
+        /// <summary>
         /// This uses one of each kind of token.
         /// </summary>
         [TestMethod]
@@ -217,6 +231,30 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("5");
             Assert.AreEqual(f.Evaluate(v => 22.5), 5.0, 1e-6);
+        }
+
+        /// <summary>
+        /// I made this test to make sure that you can create two different
+        /// formulas while still evaluating one properly.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate11()
+        {
+            Formula e = new Formula("( 10 * 3 ) / 5");
+            Formula f = new Formula("2+3+(5+7)-2+5");
+            Formula g = new Formula("( 10 * 3 ) / 5");
+            Assert.AreEqual(f.Evaluate(v => 0), 20.0, 1e-6);
+        }
+
+        /// <summary>
+        /// Testing parenthesis out of order, even though their totals match.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Evaluate12()
+        {
+            Formula f = new Formula("2+3)+(5+7)-(2+5");
+            Assert.AreEqual(f.Evaluate(v => 0), 20.0, 1e-6);
         }
 
         /// <summary>
