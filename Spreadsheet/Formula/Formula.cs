@@ -47,12 +47,14 @@ namespace Formulas //I AM TYPING THIS PURELY FOR TESTING PURPOSES AND THIS IS TH
             //I have to initialize this to something.
             this.previous = null;
 
-            //check if the parameter is null
-            if (formula == null)
-                throw new FormulaFormatException("The formula cannot be null.");
+            //check if the parameter is null or whitespace
+
+            if (string.IsNullOrWhiteSpace(formula))
+                throw new FormulaFormatException("The formula cannot be null or whitespace");
             
-            //saved for the Evaluate function
-            this.formulaString = formula;
+
+                //saved for the Evaluate function
+                this.formulaString = formula;
 
             var tokens = GetTokens(formula);
 
