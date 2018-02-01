@@ -59,9 +59,9 @@ namespace Dependencies
         /// </summary>
         public DependencyGraph()
         {
-            dependeesList = new Dictionary<string,HashSet<string>>();
-            dependentsList = new Dictionary<string, HashSet<string>>();
-            size = 0;
+            this.dependeesList = new Dictionary<string,HashSet<string>>();
+            this.dependentsList = new Dictionary<string, HashSet<string>>();
+            this.size = 0;
         }
 
         /// <summary>
@@ -145,47 +145,50 @@ namespace Dependencies
         /// </summary>
         public void AddDependency(string s, string t)
         {
-            //if s already has dependents
-            if (dependentsList.TryGetValue(s, out HashSet<string> theDependents))
+            if (s != null && t != null)
             {
-                //add dependents and dependees to the current entries if it doesn't already exist
-                if (!(theDependents.Contains(t)))
+                //if s already has dependents
+                if (dependentsList.TryGetValue(s, out HashSet<string> theDependents))
                 {
-                    size++;
-                    theDependents.Add(t);
-
-                    //if it has dependees, add a dependee
-                    if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
-                        theDependees.Add(s);
-
-                    //otherwise, create new deependee list
-                    else
+                    //add dependents and dependees to the current entries if it doesn't already exist
+                    if (!(theDependents.Contains(t)))
                     {
-                        var temp = new HashSet<string> { s };
-                        dependeesList.Add(t, temp);
-                    }  
-                }
-            }
+                        size++;
+                        theDependents.Add(t);
 
-            else
-            {
-                //otherwise, create new dependent and dependee entries
-                HashSet<string> dependents = new HashSet<string>{t};
-                dependentsList.Add(s,dependents);
+                        //if it has dependees, add a dependee
+                        if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
+                            theDependees.Add(s);
 
-                //if it already has dependees, add
-                if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
-                {
-                    theDependees.Add(s);
-                    size++;
+                        //otherwise, create new deependee list
+                        else
+                        {
+                            var temp = new HashSet<string> { s };
+                            dependeesList.Add(t, temp);
+                        }
+                    }
                 }
 
-                //otherwise make new dependees list
                 else
                 {
-                    HashSet<string> dependees = new HashSet<string> { s };
-                    dependeesList.Add(t, dependees);
-                    size++;
+                    //otherwise, create new dependent and dependee entries
+                    HashSet<string> dependents = new HashSet<string> { t };
+                    dependentsList.Add(s, dependents);
+
+                    //if it already has dependees, add
+                    if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
+                    {
+                        theDependees.Add(s);
+                        size++;
+                    }
+
+                    //otherwise make new dependees list
+                    else
+                    {
+                        HashSet<string> dependees = new HashSet<string> { s };
+                        dependeesList.Add(t, dependees);
+                        size++;
+                    }
                 }
             }
         }

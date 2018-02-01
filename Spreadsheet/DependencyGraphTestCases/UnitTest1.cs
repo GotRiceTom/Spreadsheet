@@ -39,6 +39,15 @@ namespace DependencyGraphTestCases
                 Assert.Fail();
         }
 
+        [TestMethod]
+        public void AddEmptyDependency()
+        {
+            DependencyGraph testing = new DependencyGraph();
+            testing.AddDependency(null,null);
+            if (!(testing.Size == 0))
+                Assert.Fail();
+        }
+
 
         /// <summary>
         /// This makes sure that something that doesn't have dependents returns false
