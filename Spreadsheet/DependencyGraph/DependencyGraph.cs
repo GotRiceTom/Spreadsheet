@@ -1,4 +1,5 @@
 ﻿// Skeleton implementation written by Joe Zachary for CS 3500, January 2018.
+// Filled in by Eric Naegle u0725372 on 1/31/2018
 
 using System;
 using System.Collections.Generic;
@@ -48,11 +49,19 @@ namespace Dependencies
     /// </summary>
     public class DependencyGraph
     {
+        //I use two HashMaps to keep track of the dependencies so that it's equally fast
+        Dictionary<string, HashSet<string> > dependeesList;
+        Dictionary<string, HashSet<string> > dependentsList;
+        int size;
+
         /// <summary>
         /// Creates a DependencyGraph containing no dependencies.
         /// </summary>
         public DependencyGraph()
         {
+            dependeesList = new Dictionary<string,HashSet<string>>();
+            dependentsList = new Dictionary<string, HashSet<string>>();
+            size = 0;
         }
 
         /// <summary>
@@ -60,7 +69,7 @@ namespace Dependencies
         /// </summary>
         public int Size
         {
-            get { return 0; }
+            get { return size; }
         }
 
         /// <summary>
@@ -68,7 +77,15 @@ namespace Dependencies
         /// </summary>
         public bool HasDependents(string s)
         {
-            return false;
+            if (s == null)
+                return false;
+
+            //I remove the key from the dictionary if it has no dependents so I can just check if the key is
+            //in the dictionary to know if it has dependents or dependees
+            if (dependentsList.ContainsKey(s))
+                return true;
+            
+            else return false;
         }
 
         /// <summary>
@@ -76,7 +93,15 @@ namespace Dependencies
         /// </summary>
         public bool HasDependees(string s)
         {
-            return false;
+            if (s == null)
+                return false;
+
+            //I remove the key from the dictionary if it has no dependees so I can just check if the key is
+            //in the dictionary to know if it has dependents or dependees
+            if (dependeesList.ContainsKey(s))
+                return true;
+
+            else return false;
         }
 
         /// <summary>
@@ -84,6 +109,15 @@ namespace Dependencies
         /// </summary>
         public IEnumerable<string> GetDependents(string s)
         {
+            if (s != null)
+            {
+                if (HasDependents(s))
+                {
+                    dependentsList.TryGetValue(s, out HashSet<string> dependents);
+                    return dependents;
+                }
+            }
+
             return null;
         }
 
@@ -92,6 +126,15 @@ namespace Dependencies
         /// </summary>
         public IEnumerable<string> GetDependees(string s)
         {
+            if (s != null)
+            {
+                if (HasDependees(s))
+                {
+                    dependeesList.TryGetValue(s, out HashSet<string> dependents);
+                    return dependents;
+                }
+            }
+
             return null;
         }
 
@@ -102,6 +145,49 @@ namespace Dependencies
         /// </summary>
         public void AddDependency(string s, string t)
         {
+            //if s already has dependents
+            if (dependentsList.TryGetValue(s, out HashSet<string> theDependents))
+            {
+                //add dependents and dependees to the current entries if it doesn't already exist
+                if (!(theDependents.Contains(t)))
+                {
+                    size++;
+                    theDependents.Add(t);
+
+                    //if it has dependees, add a dependee
+                    if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
+                        theDependees.Add(s);
+
+                    //otherwise, create new deependee list
+                    else
+                    {
+                        var temp = new HashSet<string> { s };
+                        dependeesList.Add(t, temp);
+                    }  
+                }
+            }
+
+            else
+            {
+                //otherwise, create new dependent and dependee entries
+                HashSet<string> dependents = new HashSet<string>{t};
+                dependentsList.Add(s,dependents);
+
+                //if it already has dependees, add
+                if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
+                {
+                    theDependees.Add(s);
+                    size++;
+                }
+
+                //otherwise make new dependees list
+                else
+                {
+                    HashSet<string> dependees = new HashSet<string> { s };
+                    dependeesList.Add(t, dependees);
+                    size++;
+                }
+            }
         }
 
         /// <summary>
@@ -111,6 +197,33 @@ namespace Dependencies
         /// </summary>
         public void RemoveDependency(string s, string t)
         {
+            if (((s != null) && (t != null)))
+            {
+                if (dependentsList.TryGetValue(s, out HashSet<string> dependents))
+                {
+                    //if the dependency exists, remove it
+                    if (dependents.Contains(t))
+                    {
+                        dependents.Remove(t);
+                        
+                        //remove the key if it has no dependents
+                        if (dependents.Count == 0)
+                            dependentsList.Remove(s);
+
+                        if (dependeesList.TryGetValue(t, out HashSet<string> dependees))
+                        {
+                            dependees.Remove(s);
+
+                            //remove the key if it has no dependents
+                            if (dependees.Count == 0)
+                                dependeesList.Remove(t);
+                        }
+
+                        //reduce size once
+                        size--;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -120,6 +233,28 @@ namespace Dependencies
         /// </summary>
         public void ReplaceDependents(string s, IEnumerable<string> newDependents)
         {
+            if (s != null)
+            {
+                //if s has dependents
+                if (dependentsList.TryGetValue(s, out HashSet<string> x))
+                {
+                    //make a copy, loop through it, and delete the entire dependencies, not just the dependents
+                    HashSet<string> temp = new HashSet<string>(x);
+
+                    foreach (string t in temp)
+                    {
+                        if (t != null)
+                            RemoveDependency(s, t);
+                    }
+                }
+
+                //create new dependencies, not just adding dependents to s
+                foreach (string t in newDependents)
+                {
+                    if (t != null)
+                        AddDependency(s, t);
+                }
+            }
         }
 
         /// <summary>
@@ -129,6 +264,29 @@ namespace Dependencies
         /// </summary>
         public void ReplaceDependees(string t, IEnumerable<string> newDependees)
         {
+            if (t != null)
+            {
+                //if t has dependees
+                if (dependeesList.TryGetValue(t, out HashSet<string> x))
+                {
+                    //create a copy to loop through and delete the dependencies
+                    HashSet<string> temp = new HashSet<string>(x);
+
+                    foreach (string s in temp)
+                    {
+                        if (s != null)
+                            RemoveDependency(s,t);
+                    }
+                }
+
+                //then create new dependencies
+                foreach (string s in newDependees)
+                {
+                    if (s != null)
+                        AddDependency(s,t);
+                }
+                
+            }
         }
     }
 }
