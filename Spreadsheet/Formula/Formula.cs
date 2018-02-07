@@ -14,13 +14,15 @@ namespace Formulas
     /// the four binary operator symbols +, -, *, and /.  (The unary operators + and -
     /// are not allowed.)
     /// </summary>
-    public class Formula
+    public struct Formula
     {
         private string formulaString;
 
         //previous, and the number of parenthesis, is necessary for formula formatting
         private int openParens, closeParens;
         private string previous;
+        List<string> normalizedTokens;
+        private ISet<string> variableSet;
 
         /// <summary>
         /// Creates a Formula from a string that consists of a standard infix expression composed
@@ -42,25 +44,44 @@ namespace Formulas
         /// If the formula is syntacticaly invalid, throws a FormulaFormatException with an 
         /// explanatory Message.
         /// </summary>
-        public Formula(String formula)
+        /// 
+
+        //this constructor is used if there is nothing but a string passed in so no normalizing or validating is done
+        public Formula(String theFormula) : this(theFormula, s => s, t => true) { }
+
+        //this one is used if a normalizer and validator is passed in
+        public Formula(String theFormula, Normalizer N, Validator V)
         {
+            if (theFormula == null || N == null || V == null)
+                throw new ArgumentNullException("The parameter cannot be null");
+
+            //initialize the fields for the struct
+            string formula = theFormula;
+            openParens = 0;
+            closeParens = 0;
+            variableSet = new HashSet<string>();
+
+            //this will be used in the Evaluate method
+            normalizedTokens = new List<string>();
+
             //I have to initialize this to something.
             this.previous = null;
 
             //check if the parameter is null or whitespace
-
             if (string.IsNullOrWhiteSpace(formula))
                 throw new FormulaFormatException("The formula cannot be null or whitespace");
-            
 
-                //saved for the Evaluate function
-                this.formulaString = formula;
+            //saved for the Evaluate function
+            this.formulaString = formula;
 
+            //get tokens ready
             var tokens = GetTokens(formula);
 
             bool isFirstVariable = true;
-            foreach (string token in tokens)
+            foreach (string enumeratedToken in tokens)
             {
+                string token = enumeratedToken;
+
                 //split the string into characters for testing 
                 char[] letters = token.ToCharArray();
 
@@ -68,6 +89,26 @@ namespace Formulas
                 if (letters.Length == 0)
                 {
                     throw new FormulaFormatException("The formula can't be empty.");
+                }
+
+                //this is where I do all of the normalizer and validator checks, and keep track of all of the normalized variables
+                if (char.IsLetter(letters[0]))
+                {
+                    bool isVariable = true;
+
+                    foreach (char letter in letters)
+                    {
+                        if (!(char.IsLetterOrDigit(letter)))
+                            isVariable = false;
+                    }
+
+                    if (isVariable)
+                    {
+                        token = N(token);
+                        if (!V(token))
+                            throw new FormulaFormatException("The validator didn't like " + token);
+                        variableSet.Add(token);
+                    }
                 }
 
                 //check if it's an operator or a single-character variable or digit.
@@ -94,6 +135,8 @@ namespace Formulas
                         {
                             throw new FormulaFormatException(token + " is invalid. Variables should start with a letter and be followed only by letters or digits.");
                         }
+
+                        variableSet.Add(token);
                     }
                 }
 
@@ -131,6 +174,9 @@ namespace Formulas
                     isFirstVariable = false;
                 }
 
+                //I created a new list of all of the tokens, except this time the variables have been normalized and checked for validity
+                normalizedTokens.Add(token);
+
                 //hold on to the previous to check validity of next object
                 previous = token;
             }
@@ -143,6 +189,7 @@ namespace Formulas
             if (!(openParens == closeParens))
                 throw new FormulaFormatException("Number of open and closing parenthesis don't match.");
         }
+
         /// <summary>
         /// Evaluates this Formula, using the Lookup delegate to determine the values of variables.  (The
         /// delegate takes a variable name as a parameter and returns its value (if it has one) or throws
@@ -154,19 +201,25 @@ namespace Formulas
         /// </summary>
         public double Evaluate(Lookup lookup)
         {
+            if (lookup == null)
+                throw new ArgumentNullException("Parameter cannot be null.");
+
             //create the fields necessary
-            var tokens = GetTokens(formulaString);
             Stack<double> values = new Stack<double>();
             Stack<String> operators = new Stack<String>();
             openParens = 0;
             closeParens = 0;
 
-            foreach(string token in tokens)
+            //this loops through the list of tokens that were normalized in the constructor.
+            foreach(string token in normalizedTokens)
             {
                 //if the token is a variable
                 char[] letters = token.ToCharArray();
                 if (char.IsLetter(letters[0]))
                 {
+                    //add it to the variable set
+                    variableSet.Add(token);
+
                     double tokenDouble = lookup(token);
                     if ((operators.Count == 0) || (operators.Peek() == "+") || (operators.Peek() == "-") || (operators.Peek() == "(") || operators.Peek() == ")")
                     {
@@ -367,6 +420,32 @@ namespace Formulas
                 }
             }
         }
+
+        /// <summary>
+        /// Gives back a set of all of the variables in the formula after they have been normalized and validated.
+        /// </summary>
+        /// <returns></returns>
+        public ISet<string> GetVariables()
+        {
+            return variableSet;
+        }
+
+        /// <summary>
+        /// This overrides the ToString method. It will return the original formula string that was sent in as a parameter once the
+        /// formula has gone through the constructor and had its variables normalized and validated.
+        /// </summary>
+        /// <returns> the original string but with the variables normalized </returns>
+        public override string ToString()
+        {
+            string normalizedFormula = null;
+
+            foreach (string token in normalizedTokens)
+            {
+                normalizedFormula = normalizedFormula + token;
+            }
+
+            return normalizedFormula;
+        }
     }
 
     /// <summary>
@@ -377,6 +456,9 @@ namespace Formulas
     /// don't is up to the implementation of the method.
     /// </summary>
     public delegate double Lookup(string var);
+
+    public delegate string Normalizer(string s);
+    public delegate bool Validator(string s);
 
     /// <summary>
     /// Used to report that a Lookup delegate is unable to determine the value

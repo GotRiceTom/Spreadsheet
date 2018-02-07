@@ -11,7 +11,7 @@ namespace Formulas
         [ExpectedException(typeof(FormulaFormatException))]
         public void Test1()
         {
-            Formula f = new Formula("        ");
+            Formula f = new Formula("        ", NormalizerDoesNothing, ValidatorDoesNothing);
         }
 
         [TestMethod()]
@@ -363,6 +363,16 @@ namespace Formulas
         public void Test45()
         {
             Test41();
+        }
+
+        public string NormalizerDoesNothing(string s)
+        {
+            return s;
+        }
+
+        public bool ValidatorDoesNothing(string s)
+        {
+            return true;
         }
     }
 }
