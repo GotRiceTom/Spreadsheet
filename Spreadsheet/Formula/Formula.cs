@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Formulas //I AM TYPING THIS PURELY FOR TESTING PURPOSES AND THIS IS THE ONLY THING I ADDED-------------------------------------------------------------------------------------------------------------------------------
+namespace Formulas
 {
     /// <summary>
     /// Represents formulas written in standard infix notation using standard precedence
