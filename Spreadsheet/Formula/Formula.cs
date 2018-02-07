@@ -140,7 +140,7 @@ namespace Formulas
                     }
                 }
 
-                //Check if it's a double
+                // check if it's a double
                 else if (char.IsDigit(letters[0]))
                 {
                     if (!(double.TryParse(token, out double unused2)))
