@@ -50,9 +50,9 @@ namespace Dependencies
     public class DependencyGraph
     {
         //I use two HashMaps to keep track of the dependencies so that it's equally fast
-        Dictionary<string, HashSet<string> > dependeesList;
-        Dictionary<string, HashSet<string> > dependentsList;
-        int size;
+        private Dictionary<string, HashSet<string> > dependeesList;
+        private Dictionary<string, HashSet<string> > dependentsList;
+        private int size;
 
         /// <summary>
         /// Creates a DependencyGraph containing no dependencies.
@@ -118,7 +118,7 @@ namespace Dependencies
                 }
             }
 
-            return null;
+            return new HashSet<string>();
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Dependencies
                 }
             }
 
-            return null;
+            return new HashSet<string>();
         }
 
         /// <summary>
