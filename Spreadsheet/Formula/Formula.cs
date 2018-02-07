@@ -85,12 +85,6 @@ namespace Formulas
                 //split the string into characters for testing 
                 char[] letters = token.ToCharArray();
 
-                //double checking size for my sanity
-                if (letters.Length == 0)
-                {
-                    throw new FormulaFormatException("The formula can't be empty.");
-                }
-
                 //this is where I do all of the normalizer and validator checks, and keep track of all of the normalized variables
                 if (char.IsLetter(letters[0]))
                 {

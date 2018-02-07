@@ -19,6 +19,16 @@ namespace FormulaTestCases
     public class UnitTests
     {
         /// <summary>
+        /// Makes sure that a variable without the proper structure makes a formula exception.
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void BadVariable()
+        {
+            Formula f = new Formula("x + 5 - y6)?5 + X45 - X", NormalizerAllCaps, ValidatorAllStringsAreCaps);
+        }
+
+        /// <summary>
         /// This makes sure that they normalizer works, that the validator lets a valid variable pass, and that toString works.
         /// </summary>
         [TestMethod()]
@@ -38,7 +48,6 @@ namespace FormulaTestCases
         public void ToString_And_All_Caps_Normalizer_And_All_Lower_Validator()
         {
             Formula f = new Formula("x + 5 - y65 + X45 - X", NormalizerAllCaps, ValidatorAllStringsAreLower);
-            string newFormula = f.ToString();
         }
 
         /// <summary>
