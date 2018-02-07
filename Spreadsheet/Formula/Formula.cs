@@ -440,10 +440,8 @@ namespace Formulas
             string normalizedFormula = null;
 
             foreach (string token in normalizedTokens)
-            {
                 normalizedFormula = normalizedFormula + token;
-            }
-
+            
             return normalizedFormula;
         }
     }

@@ -19,6 +19,70 @@ namespace FormulaTestCases
     public class UnitTests
     {
         /// <summary>
+        /// This makes sure that they normalizer works, that the validator lets a valid variable pass, and that toString works.
+        /// </summary>
+        [TestMethod()]
+        public void ToString_And_All_Caps_Normalizer_And_All_Caps_Validator()
+        {
+            Formula f = new Formula("x + 5 - y65 + X45 - X", NormalizerAllCaps, ValidatorAllStringsAreCaps);
+            string newFormula = f.ToString();
+            if (newFormula != "X+5-Y65+X45-X")
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// This makes sure that they normalizer works, that the validator thows an exception on a bad variable, and that toString works.
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void ToString_And_All_Caps_Normalizer_And_All_Lower_Validator()
+        {
+            Formula f = new Formula("x + 5 - y65 + X45 - X", NormalizerAllCaps, ValidatorAllStringsAreLower);
+            string newFormula = f.ToString();
+        }
+
+        /// <summary>
+        /// Checks that null parameters throw ArgumentNullExceptions
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullParameter()
+        {
+            Formula f = new Formula(null, NormalizerDoesNothing, ValidatorDoesNothing);
+        }
+
+        /// <summary>
+        /// Checks that null parameters throw ArgumentNullExceptions
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullParameter2()
+        {
+            Formula f = new Formula("x", null, ValidatorDoesNothing);
+        }
+
+        /// <summary>
+        /// Checks that null parameters throw ArgumentNullExceptions
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullParameter3()
+        {
+            Formula f = new Formula("x", NormalizerDoesNothing, null);
+        }
+
+        /// <summary>
+        /// Checks that null parameters throw ArgumentNullExceptions
+        /// </summary>
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullParameterEvaluate()
+        {
+            Formula f = new Formula("5 + 6", NormalizerDoesNothing, ValidatorDoesNothing);
+            f.Evaluate(null);
+        }
+
+        /// <summary>
         /// This tests that a syntactically incorrect parameter to Formula results
         /// in a FormulaFormatException.
         /// </summary>
@@ -272,6 +336,47 @@ namespace FormulaTestCases
                 case "z": return 8.0;
                 default: throw new UndefinedVariableException(v);
             }
+        }
+
+        public string NormalizerDoesNothing(string s)
+        {
+            return s;
+        }
+
+        public string NormalizerAllCaps(string s)
+        {
+            return s.ToUpper();
+        }
+
+        public bool ValidatorDoesNothing(string s)
+        {
+            return true;
+        }
+
+        public bool ValidatorAllStringsAreCaps(string s)
+        {
+            char[] letters = s.ToCharArray();
+
+            foreach(char letter in letters)
+            {
+                if (char.IsLower(letter))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidatorAllStringsAreLower(string s)
+        {
+            char[] letters = s.ToCharArray();
+
+            foreach (char letter in letters)
+            {
+                if (char.IsUpper(letter))
+                    return false;
+            }
+
+            return true;
         }
     }
 }
