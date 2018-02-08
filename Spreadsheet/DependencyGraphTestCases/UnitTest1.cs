@@ -41,15 +41,16 @@ namespace DependencyGraphTestCases
                 Assert.Fail();
         }
 
+        /// <summary>
+        /// Makes sure that AddDependency throws an exception with null parameters
+        /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void AddEmptyDependency()
         {
             DependencyGraph testing = new DependencyGraph();
             testing.AddDependency(null, null);
-            if (!(testing.Size == 0))
-                Assert.Fail();
         }
-
 
         /// <summary>
         /// This makes sure that something that doesn't have dependents returns false
@@ -76,15 +77,15 @@ namespace DependencyGraphTestCases
 
 
         /// <summary>
-        /// This makes sure that null returns false
+        /// This makes sure that null throws and ArgumentNullException
         /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void HasDependentsNull()
         {
             DependencyGraph testing = new DependencyGraph();
             testing.AddDependency("a", "b");
-            if (testing.HasDependents(null))
-                Assert.Fail();
+            testing.HasDependents(null);
         }
 
         /// <summary>
@@ -112,14 +113,39 @@ namespace DependencyGraphTestCases
         }
 
         /// <summary>
-        /// Makes sure that a null returns with no dependees
+        /// Makes sure that a null throws an argument null exception
         /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void HasDependeesNull()
         {
             DependencyGraph testing = new DependencyGraph();
             testing.AddDependency("a", "b");
-            if (testing.HasDependees(null))
+            testing.HasDependees(null);
+        }
+
+        /// <summary>
+        /// Makes sure that a null throws an argument null exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullParameterConstructingGraph()
+        {
+            DependencyGraph testing = new DependencyGraph(null);
+            Assert.Fail();
+        }
+
+        /// <summary>
+        /// Makes sure that a graph as a parameter works okay.
+        /// </summary>
+        [TestMethod]
+        public void ParameterConstructingGraph()
+        {
+            DependencyGraph original = new DependencyGraph();
+            original.AddDependency("a", "b");
+            original.AddDependency("c", "e");
+            DependencyGraph testing = new DependencyGraph(original);
+            if (testing.Size != original.Size)
                 Assert.Fail();
         }
 
@@ -188,42 +214,41 @@ namespace DependencyGraphTestCases
         }
 
         /// <summary>
-        /// Check that null returns no dependents
+        /// Check that null throws exception
         /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void GetDependentsNONE()
         {
             DependencyGraph testing = new DependencyGraph();
             testing.AddDependency("a", "b");
             testing.RemoveDependency("a", "b");
-            if (!(testing.GetDependents(null).Count<string>() == 0))
-                Assert.Fail();
+            testing.GetDependents(null).Count<string>();
         }
 
         /// <summary>
-        /// Checks that null returns no dependees
+        /// Checks that null throws the right exception
         /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void GetDependeesNONE()
         {
             DependencyGraph testing = new DependencyGraph();
             testing.AddDependency("a", "b");
             testing.RemoveDependency("a", "b");
-            if (!(testing.GetDependees(null).Count<string>() == 0))
-                Assert.Fail();
+            testing.GetDependees(null).Count<string>();
         }
 
         /// <summary>
-        /// Makes sure that removing a dependency doesn't work with null
+        /// Makes sure that removing a dependency doesn't work with null and throws exception
         /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void RemoveDependencyWithTNull()
         {
             DependencyGraph testing = new DependencyGraph();
             testing.AddDependency("a", "b");
             testing.RemoveDependency("a", null);
-            if (testing.Size != 1)
-                Assert.Fail();
         }
 
         /// <summary>
@@ -377,6 +402,50 @@ namespace DependencyGraphTestCases
                 if (!(replacements[a].Equals(y[a])))
                     Assert.Fail();
             }
+        }
+
+        /// <summary>
+        /// Makes sure that replace dependees throws ArgumentNullException with a null parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReplaceDependeesNull()
+        {
+            DependencyGraph testing = new DependencyGraph();
+            testing.AddDependency("a", "b");
+            testing.AddDependency("a", "a");
+            testing.AddDependency("b", "a");
+            testing.AddDependency("c", "a");
+            testing.AddDependency("d", "a");
+            testing.AddDependency("e", "a");
+            testing.AddDependency("f", "a");
+            testing.AddDependency("g", "a");
+            testing.AddDependency("h", "a");
+
+            string[] replacements = new string[] { "f", "g", "h", "i" };
+            testing.ReplaceDependees(null, null);
+        }
+
+        /// <summary>
+        /// Makes sure that replace dependents throws ArgumentNullException with a null parameter
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReplaceDependentsNull()
+        {
+            DependencyGraph testing = new DependencyGraph();
+            testing.AddDependency("a", "b");
+            testing.AddDependency("a", "a");
+            testing.AddDependency("b", "a");
+            testing.AddDependency("c", "a");
+            testing.AddDependency("d", "a");
+            testing.AddDependency("e", "a");
+            testing.AddDependency("f", "a");
+            testing.AddDependency("g", "a");
+            testing.AddDependency("h", "a");
+
+            string[] replacements = new string[] { "f", "g", "h", "i" };
+            testing.ReplaceDependents(null, null);
         }
 
         /// <summary>

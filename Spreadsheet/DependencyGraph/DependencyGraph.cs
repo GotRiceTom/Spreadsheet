@@ -65,6 +65,23 @@ namespace Dependencies
         }
 
         /// <summary>
+        /// This is the constructor that creates a dependency graph that contains the exact same values as the graph
+        /// passed in, but they are separate objects. Throws ArgumentNullException if the parameter graph is null.
+        /// </summary>
+        /// <param name="graph"></param>
+        public DependencyGraph(DependencyGraph graph)
+        {
+            if (graph == null)
+                throw new ArgumentNullException();
+
+            var dependents = new Dictionary<string, HashSet<string>>(graph.dependentsList);
+            var dependees = new Dictionary<string,HashSet<string>>(graph.dependeesList);
+            this.dependentsList = dependents;
+            this.dependeesList = dependees;
+            this.size = graph.size;
+        }
+
+        /// <summary>
         /// The number of dependencies in the DependencyGraph.
         /// </summary>
         public int Size
@@ -72,13 +89,15 @@ namespace Dependencies
             get { return size; }
         }
 
-        /// <summary>
-        /// Reports whether dependents(s) is non-empty.  Requires s != null.
-        /// </summary>
+    /// <summary>
+    /// Reports whether or not a string has dependents. If the parameter is null, an ArgumentNullException will be thrown.
+    /// </summary>
+    /// <param> string dependee </param>
+    /// <returns></returns>
         public bool HasDependents(string s)
         {
             if (s == null)
-                return false;
+                throw new ArgumentNullException("parameter cannot be null");
 
             //I remove the key from the dictionary if it has no dependents so I can just check if the key is
             //in the dictionary to know if it has dependents or dependees
@@ -89,12 +108,14 @@ namespace Dependencies
         }
 
         /// <summary>
-        /// Reports whether dependees(s) is non-empty.  Requires s != null.
+        /// Reports whether or nat a string has dependees. If the parameter is null, an ArgumentNullException will be thrown.
         /// </summary>
+        /// <param> string dependent </param>
+        /// <returns></returns>
         public bool HasDependees(string s)
         {
             if (s == null)
-                return false;
+                throw new ArgumentNullException("parameter cannot be null");
 
             //I remove the key from the dictionary if it has no dependees so I can just check if the key is
             //in the dictionary to know if it has dependents or dependees
@@ -105,34 +126,34 @@ namespace Dependencies
         }
 
         /// <summary>
-        /// Enumerates dependents(s).  Requires s != null.
+        /// Enumerates dependents(s). Throws ArgumentNullException if the parameter is null.
         /// </summary>
         public IEnumerable<string> GetDependents(string s)
         {
-            if (s != null)
+            if (s == null)
+                throw new ArgumentNullException("parameter cannot be null");
+
+            if (HasDependents(s))
             {
-                if (HasDependents(s))
-                {
-                    dependentsList.TryGetValue(s, out HashSet<string> dependents);
-                    return dependents;
-                }
+                dependentsList.TryGetValue(s, out HashSet<string> dependents);
+                return dependents;
             }
 
             return new HashSet<string>();
         }
 
         /// <summary>
-        /// Enumerates dependees(s).  Requires s != null.
+        /// Enumerates dependees(s). Throws ArgumentNullException if the parameter is null
         /// </summary>
         public IEnumerable<string> GetDependees(string s)
         {
-            if (s != null)
+            if (s == null)
+                throw new ArgumentNullException("parameter cannot be null");
+
+            if (HasDependees(s))
             {
-                if (HasDependees(s))
-                {
-                    dependeesList.TryGetValue(s, out HashSet<string> dependents);
-                    return dependents;
-                }
+                dependeesList.TryGetValue(s, out HashSet<string> dependents);
+                return dependents;
             }
 
             return new HashSet<string>();
@@ -141,54 +162,54 @@ namespace Dependencies
         /// <summary>
         /// Adds the dependency (s,t) to this DependencyGraph.
         /// This has no effect if (s,t) already belongs to this DependencyGraph.
-        /// Requires s != null and t != null.
+        /// Throws ArgumentNullException if any of the parameters are null.
         /// </summary>
         public void AddDependency(string s, string t)
         {
-            if (s != null && t != null)
+            if (s == null || t == null)
+                throw new ArgumentNullException("parameter cannot be null");
+
+            //if s already has dependents
+            if (dependentsList.TryGetValue(s, out HashSet<string> theDependents))
             {
-                //if s already has dependents
-                if (dependentsList.TryGetValue(s, out HashSet<string> theDependents))
+                //add dependents and dependees to the current entries if it doesn't already exist
+                if (!(theDependents.Contains(t)))
                 {
-                    //add dependents and dependees to the current entries if it doesn't already exist
-                    if (!(theDependents.Contains(t)))
-                    {
-                        size++;
-                        theDependents.Add(t);
+                    size++;
+                    theDependents.Add(t);
 
-                        //if it has dependees, add a dependee
-                        if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
-                            theDependees.Add(s);
-
-                        //otherwise, create new deependee list
-                        else
-                        {
-                            var temp = new HashSet<string> { s };
-                            dependeesList.Add(t, temp);
-                        }
-                    }
-                }
-
-                else
-                {
-                    //otherwise, create new dependent and dependee entries
-                    HashSet<string> dependents = new HashSet<string> { t };
-                    dependentsList.Add(s, dependents);
-
-                    //if it already has dependees, add
+                    //if it has dependees, add a dependee
                     if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
-                    {
                         theDependees.Add(s);
-                        size++;
-                    }
 
-                    //otherwise make new dependees list
+                    //otherwise, create new deependee list
                     else
                     {
-                        HashSet<string> dependees = new HashSet<string> { s };
-                        dependeesList.Add(t, dependees);
-                        size++;
+                        var temp = new HashSet<string> { s };
+                        dependeesList.Add(t, temp);
                     }
+                }
+            }
+
+            else
+            {
+                //otherwise, create new dependent and dependee entries
+                HashSet<string> dependents = new HashSet<string> { t };
+                dependentsList.Add(s, dependents);
+
+                //if it already has dependees, add
+                if (dependeesList.TryGetValue(t, out HashSet<string> theDependees))
+                {
+                    theDependees.Add(s);
+                    size++;
+                }
+
+                //otherwise make new dependees list
+                else
+                {
+                    HashSet<string> dependees = new HashSet<string> { s };
+                    dependeesList.Add(t, dependees);
+                    size++;
                 }
             }
         }
@@ -196,35 +217,35 @@ namespace Dependencies
         /// <summary>
         /// Removes the dependency (s,t) from this DependencyGraph.
         /// Does nothing if (s,t) doesn't belong to this DependencyGraph.
-        /// Requires s != null and t != null.
+        /// Throws ArgumentNullException if any of the parameters are null.
         /// </summary>
         public void RemoveDependency(string s, string t)
         {
-            if (((s != null) && (t != null)))
+            if (s == null || t == null)
+                throw new ArgumentNullException("parameter cannot be null");
+
+            if (dependentsList.TryGetValue(s, out HashSet<string> dependents))
             {
-                if (dependentsList.TryGetValue(s, out HashSet<string> dependents))
+                //if the dependency exists, remove it
+                if (dependents.Contains(t))
                 {
-                    //if the dependency exists, remove it
-                    if (dependents.Contains(t))
-                    {
-                        dependents.Remove(t);
+                    dependents.Remove(t);
                         
+                    //remove the key if it has no dependents
+                    if (dependents.Count == 0)
+                        dependentsList.Remove(s);
+
+                    if (dependeesList.TryGetValue(t, out HashSet<string> dependees))
+                    {
+                        dependees.Remove(s);
+
                         //remove the key if it has no dependents
-                        if (dependents.Count == 0)
-                            dependentsList.Remove(s);
-
-                        if (dependeesList.TryGetValue(t, out HashSet<string> dependees))
-                        {
-                            dependees.Remove(s);
-
-                            //remove the key if it has no dependents
-                            if (dependees.Count == 0)
-                                dependeesList.Remove(t);
-                        }
-
-                        //reduce size once
-                        size--;
+                        if (dependees.Count == 0)
+                            dependeesList.Remove(t);
                     }
+
+                    //reduce size once
+                    size--;
                 }
             }
         }
@@ -232,63 +253,62 @@ namespace Dependencies
         /// <summary>
         /// Removes all existing dependencies of the form (s,r).  Then, for each
         /// t in newDependents, adds the dependency (s,t).
-        /// Requires s != null and t != null.
+        /// Throws ArgumentNullException if any of the parameters are null.
         /// </summary>
         public void ReplaceDependents(string s, IEnumerable<string> newDependents)
         {
-            if (s != null)
+            if (s == null || newDependents == null)
+                throw new ArgumentNullException("parameter cannot be null");
+
+            //if s has dependents
+            if (dependentsList.TryGetValue(s, out HashSet<string> x))
             {
-                //if s has dependents
-                if (dependentsList.TryGetValue(s, out HashSet<string> x))
-                {
-                    //make a copy, loop through it, and delete the entire dependencies, not just the dependents
-                    HashSet<string> temp = new HashSet<string>(x);
+                //make a copy, loop through it, and delete the entire dependencies, not just the dependents
+                HashSet<string> temp = new HashSet<string>(x);
 
-                    foreach (string t in temp)
-                    {
-                        if (t != null)
-                            RemoveDependency(s, t);
-                    }
-                }
-
-                //create new dependencies, not just adding dependents to s
-                foreach (string t in newDependents)
+                foreach (string t in temp)
                 {
                     if (t != null)
-                        AddDependency(s, t);
+                        RemoveDependency(s, t);
                 }
+            }
+
+            //create new dependencies, not just adding dependents to s
+            foreach (string t in newDependents)
+            {
+                if (t != null)
+                    AddDependency(s, t);
             }
         }
 
         /// <summary>
         /// Removes all existing dependencies of the form (r,t).  Then, for each 
         /// s in newDependees, adds the dependency (s,t).
-        /// Requires s != null and t != null.
+        /// Throws ArgumentNullException if any of the parameters are null.
         /// </summary>
         public void ReplaceDependees(string t, IEnumerable<string> newDependees)
         {
-            if (t != null)
+            if (t == null || newDependees == null)
+                throw new ArgumentNullException("parameter cannot be null");
+
+            //if t has dependees
+            if (dependeesList.TryGetValue(t, out HashSet<string> x))
             {
-                //if t has dependees
-                if (dependeesList.TryGetValue(t, out HashSet<string> x))
-                {
-                    //create a copy to loop through and delete the dependencies
-                    HashSet<string> temp = new HashSet<string>(x);
+                //create a copy to loop through and delete the dependencies
+                HashSet<string> temp = new HashSet<string>(x);
 
-                    foreach (string s in temp)
-                    {
-                        if (s != null)
-                            RemoveDependency(s,t);
-                    }
-                }
-
-                //then create new dependencies
-                foreach (string s in newDependees)
+                foreach (string s in temp)
                 {
                     if (s != null)
-                        AddDependency(s,t);
+                        RemoveDependency(s,t);
                 }
-                
+            }
+
+            //then create new dependencies
+            foreach (string s in newDependees)
+            {
+                if (s != null)
+                    AddDependency(s,t);
             }
         }
     }
