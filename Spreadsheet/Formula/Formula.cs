@@ -47,7 +47,11 @@ namespace Formulas
         /// 
 
         //this constructor is used if there is nothing but a string passed in so no normalizing or validating is done
-        public Formula(String theFormula) : this(theFormula, s => s, t => true) { }
+        public Formula(String theFormula) : this(theFormula, s => s, t => true)
+        {
+            //if(theFormula == null)
+               //theFormula = "0";
+        }
 
         //this one is used if a normalizer and validator is passed in
         public Formula(String theFormula, Normalizer N, Validator V)
@@ -197,6 +201,10 @@ namespace Formulas
         {
             if (lookup == null)
                 throw new ArgumentNullException("Parameter cannot be null.");
+
+            //This is how I make sure that the zero argument constructor works
+            if (normalizedTokens == null)
+                normalizedTokens = new List<string>{"0"};
 
             //create the fields necessary
             Stack<double> values = new Stack<double>();
@@ -431,6 +439,9 @@ namespace Formulas
         /// <returns> the original string but with the variables normalized </returns>
         public override string ToString()
         {
+            if (normalizedTokens == null)
+                normalizedTokens = new List<string> { "0" };
+
             string normalizedFormula = null;
 
             foreach (string token in normalizedTokens)

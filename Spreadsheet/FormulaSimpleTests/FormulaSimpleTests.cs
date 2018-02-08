@@ -8,12 +8,7 @@ using Formulas;
 namespace FormulaTestCases
 {
     /// <summary>
-    /// These test cases are in no sense comprehensive!  They are intended to show you how
-    /// client code can make use of the Formula class, and to show you how to create your
-    /// own (which we strongly recommend).  To run them, pull down the Test menu and do
-    /// Run > All Tests.
-    /// 
-    /// I added additional tests to make sure everything is good to go.
+    /// These are some of the tests supplied by the professor mixed with some of my own tests.
     /// </summary>
     [TestClass]
     public class UnitTests
@@ -89,6 +84,17 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("5 + 6", NormalizerDoesNothing, ValidatorDoesNothing);
             f.Evaluate(null);
+        }
+
+        /// <summary>
+        /// Makes sure that a zero argument constructor works like "0".
+        /// </summary>
+        [TestMethod()]
+        public void ZeroArgumentConstructor()
+        {
+            Formula f = new Formula();
+            if (f.ToString() != "0" && f.Evaluate(Lookup4) != 0.0)
+                Assert.Fail();
         }
 
         /// <summary>
