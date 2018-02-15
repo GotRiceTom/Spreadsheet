@@ -74,10 +74,29 @@ namespace Dependencies
             if (graph == null)
                 throw new ArgumentNullException();
 
-            var dependents = new Dictionary<string, HashSet<string>>(graph.dependentsList);
-            var dependees = new Dictionary<string,HashSet<string>>(graph.dependeesList);
-            this.dependentsList = dependents;
-            this.dependeesList = dependees;
+            //create new dictionaries to make sure the copy is unique
+            var newdependentsList = new Dictionary<string, HashSet<string>>();
+            var newdependeesList = new Dictionary<string, HashSet<string>>();
+            foreach (var item in graph.dependentsList)
+            {
+                //for each key, add a new HashSet that has original values
+                newdependentsList.Add(item.Key,new HashSet<string>(item.Value));
+            }
+
+            //set this object's dictionaries to the ones I just created
+            this.dependentsList = newdependentsList;
+
+            foreach (var item in graph.dependeesList)
+            {
+                newdependeesList.Add(item.Key,new HashSet<string>(item.Value));
+            }
+
+            this.dependeesList = newdependeesList;
+
+            //var dependents = new Dictionary<string, HashSet<string>>(graph.dependentsList);
+            //var dependees = new Dictionary<string,HashSet<string>>(graph.dependeesList);
+            //this.dependentsList = dependents;
+            //this.dependeesList = dependees;
             this.size = graph.size;
         }
 
