@@ -21,7 +21,7 @@ namespace Formulas
         //previous, and the number of parenthesis, is necessary for formula formatting
         private int openParens, closeParens;
         private string previous;
-        List<string> normalizedTokens;
+        private List<string> normalizedTokens;
         private ISet<string> variableSet;
 
         /// <summary>
@@ -47,11 +47,7 @@ namespace Formulas
         /// 
 
         //this constructor is used if there is nothing but a string passed in so no normalizing or validating is done
-        public Formula(String theFormula) : this(theFormula, s => s, t => true)
-        {
-            //if(theFormula == null)
-               //theFormula = "0";
-        }
+        public Formula(String theFormula) : this(theFormula, s => s, t => true){}
 
         //this one is used if a normalizer and validator is passed in
         public Formula(String theFormula, Normalizer N, Validator V)
@@ -108,6 +104,9 @@ namespace Formulas
                         variableSet.Add(token);
                     }
                 }
+
+                //the letters that we are checking need to be changed to the normalized letters
+                letters = token.ToCharArray();
 
                 //check if it's an operator or a single-character variable or digit.
                 if (letters.Length == 1)
@@ -429,6 +428,9 @@ namespace Formulas
         /// <returns></returns>
         public ISet<string> GetVariables()
         {
+            if (variableSet == null)
+                return new HashSet<string>();
+
             return variableSet;
         }
 
