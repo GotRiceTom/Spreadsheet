@@ -49,9 +49,17 @@
       <Project>{862ead85-346f-4d2b-a53c-98074ff813ba}</Project>
       <Name>DependencyGraph</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FormulaSimpleTests\FormulaSimpleTests.csproj">
+      <Project>{707dfaa0-3bb3-4896-af50-0a4d6d580d06}</Project>
+      <Name>FormulaSimpleTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Formula\Formula.csproj">
       <Project>{d43d998c-9797-4cf4-9bb0-6de22753849a}</Project>
       <Name>Formula</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PS2GradingTests\PS2GradingTests.csproj">
+      <Project>{5f69302b-df29-42d2-bfe2-4a168ff4f588}</Project>
+      <Name>PS2GradingTests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
