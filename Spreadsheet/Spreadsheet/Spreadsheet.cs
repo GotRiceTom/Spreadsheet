@@ -120,7 +120,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 return new List<string>();
 
             //otherwise return the cell names
-            return cells.Keys;
+            else return cells.Keys;
         }
 
         /// <summary>
@@ -135,6 +135,8 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override ISet<string> SetCellContents(string name, double number)
         {
+            //this kind of cell can only have dependents, not dependees
+
             //check for null
             if (name == null)
                 throw new InvalidNameException();
@@ -143,17 +145,31 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
                 throw new InvalidNameException();
 
+            HashSet<string> dependents = new HashSet<string>();
+
             //if the cell already exists, change the contents
             if (cells.TryGetValue(name, out Cell theCell))
             {
-                theCell.Contents = number;
-                HashSet<string> dependents = new HashSet<string>();
-                dependents.Add(name);
+                cells.Remove(name);
+                cells.Add(name, new Cell(name, number));
+            }
+            
+            //otherwise add a new cell with the contents and return no dependents since it's a number
+            else
+                cells.Add(name, new Cell(name, number));
+
+            //replace the dependees of this cell since it won't contain any cell names
+            graph.ReplaceDependees(name, new HashSet<string>());
+
+            //add name to the list of cells that depend on the value in this cell
+            dependents.Add(name);
+
+            foreach (string cellName in GetCellsToRecalculate(name))
+            {
+                dependents.Add(cellName);
             }
 
-            //otherwise add a new cell with the contents and return no dependents since it's a number
-            cells.Add(name,new Cell(name,number));
-            return new HashSet<string>();
+            return dependents;
         }
 
         //get cells to recalculate will throw a circulardependency exception when there is one. So we have to catch it and remove the dependency.
@@ -172,7 +188,41 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override ISet<string> SetCellContents(string name, string text)
         {
-            throw new NotImplementedException();
+            //this kind of cell can only have dependents, not dependees
+
+            //check for null
+            if (name == null)
+                throw new InvalidNameException();
+
+            //check name validity
+            if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
+                throw new InvalidNameException();
+
+            HashSet<string> dependents = new HashSet<string>();
+
+            //if the cell already exists, change the contents
+            if (cells.TryGetValue(name, out Cell theCell))
+            {
+                cells.Remove(name);
+                cells.Add(name, new Cell(name, text));
+            }
+
+            //otherwise add a new cell with the contents and return no dependents since it's a number
+            else
+                cells.Add(name, new Cell(name, text));
+
+            //replace the dependees of this cell since it won't contain any cell names
+            graph.ReplaceDependees(name, new HashSet<string>());
+
+            //add name to the list of cells that depend on the value in this cell
+            dependents.Add(name);
+
+            foreach (string cellName in GetCellsToRecalculate(name))
+            {
+                dependents.Add(cellName);
+            }
+
+            return dependents;
         }
 
         /// <summary>
@@ -192,7 +242,83 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override ISet<string> SetCellContents(string name, Formula formula)
         {
-            throw new NotImplementedException();
+            //copy the dictionary and dependency graph in case we have to revert later
+            DependencyGraph originalGraph = new DependencyGraph(graph);
+            object originalCellContents = GetCellContents(name);
+           
+            //this is how I revert the cell contents
+            bool isString = false, isDouble = false, isFormula = false;
+            if (originalCellContents is string)
+                isString = true;
+            else if (originalCellContents is double)
+                isDouble = true;
+            else if (originalCellContents is Formula)
+                isFormula = true;
+
+            //check for null
+            if (name == null)
+                throw new InvalidNameException();
+
+            //check name validity
+            if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
+                throw new InvalidNameException();
+
+            HashSet<string> dependents = new HashSet<string>();
+
+            //make sure that every variable in the formula is a valid cell name
+            HashSet<string> variables = new HashSet<string>(formula.GetVariables());
+            foreach(string variable in variables)
+            {
+                if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
+                    throw new InvalidNameException();
+            }
+
+            //update dependency graph based on formula with replacedependencies
+            graph.ReplaceDependees(name, variables);
+
+            //if the cell already exists, change the contents
+            if (cells.TryGetValue(name, out Cell theCell))
+            {
+                cells.Remove(name);
+                cells.Add(name, new Cell(name, formula));
+            }
+
+            //otherwise add a new cell with the contents and return no dependents since it's a number
+            else
+                cells.Add(name, new Cell(name, formula));
+
+            //empty set for dependents
+            
+
+            try
+            {
+                //add name to the list of cells that depend on the value in this cell
+                dependents.Add(name);
+
+                foreach (string cellName in GetCellsToRecalculate(name))
+                {
+                    dependents.Add(cellName);
+                }
+            }
+
+            catch (CircularException c)
+            {
+                //revert the graph to what is was before
+                this.graph = originalGraph;
+
+                //revert the contents to what is was before
+                if (isDouble)
+                    SetCellContents(name,(double)originalCellContents);
+                if (isString)
+                    SetCellContents(name,(string)originalCellContents);
+                if (isFormula)
+                    SetCellContents(name,(Formula)originalCellContents);
+
+                //rethrow the exception
+                throw new CircularException();
+            }
+
+            return dependents;
         }
 
         /// <summary>
@@ -214,12 +340,15 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
+            //check for null name
             if (name == null)
                 throw new ArgumentNullException();
+
             //check name validity
             if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
                 throw new InvalidNameException();
 
+            //return the cells whose values depend on this cell
             return graph.GetDependees(name);
         }
     }

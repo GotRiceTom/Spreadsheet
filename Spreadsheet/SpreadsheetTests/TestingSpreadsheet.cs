@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SS;
 using System.Text.RegularExpressions;
+using Formulas;
 
 namespace SpreadsheetTests
 {
@@ -28,6 +29,9 @@ namespace SpreadsheetTests
             sheet.SetCellContents(null,4.0);
         }
 
+        /// <summary>
+        /// This is my first time using regex in an assignment so I'm making sure I do it right.
+        /// </summary>
         [TestMethod]
         public void Practicing_Regex()
         {
@@ -44,6 +48,9 @@ namespace SpreadsheetTests
                 Assert.Fail("A1 should work but it isn't.");
         }
 
+        /// <summary>
+        /// If a cell is empty, when we try to get its contents it should return an empty string
+        /// </summary>
         [TestMethod]
         public void Get_Cell_Contents_Empty_Cell()
         {
@@ -53,6 +60,9 @@ namespace SpreadsheetTests
                 Assert.Fail();
         }
 
+        /// <summary>
+        /// Setting a cell's contents to 5.0 should return 5.0 when we call getCellContents
+        /// </summary>
         [TestMethod]
         public void Get_Cell_Contents_A1_Has_Double()
         {
@@ -60,6 +70,27 @@ namespace SpreadsheetTests
             sheet.SetCellContents("A1", 5.0);
             if (!((double)sheet.GetCellContents("A1") == 5.0))
                 Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Get_Cell_Contents_A1_Has_String()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A1", "hello");
+            if (!((string)sheet.GetCellContents("A1") == "hello"))
+                Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Get_Cell_Contents_A1_Has_Formula_No_Circle()
+        {
+            Formula correctFormula = new Formula("B1+2");
+            string a = correctFormula.ToString();
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A1", new Formula("B1+2"));
+            if (!(sheet.GetCellContents("A1").ToString() == a))
+                Assert.Fail();
+            if (sheet.)
         }
     }
 }
