@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="SpreadsheetTests.TestingSpreadsheet.Creating_Abstract_Spreadsheet_Doesnt_Blow_Up" /><Add Test="SpreadsheetTests.TestingSpreadsheet.Null_Cell_Name" /><Add Test="SpreadsheetTests.TestingSpreadsheet.Practicing_Regex" /><Add Test="SpreadsheetTests.TestingSpreadsheet.Get_Cell_Contents_Empty_Cell" /></Playlist>
