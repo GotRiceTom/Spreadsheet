@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SS;
 using System.Text.RegularExpressions;
 using Formulas;
+using System.Collections.Generic;
 
 namespace SpreadsheetTests
 {
@@ -72,6 +73,9 @@ namespace SpreadsheetTests
                 Assert.Fail();
         }
 
+        /// <summary>
+        /// Setting a cell's contents to hello should return hello when you use get
+        /// </summary>
         [TestMethod]
         public void Get_Cell_Contents_A1_Has_String()
         {
@@ -81,6 +85,9 @@ namespace SpreadsheetTests
                 Assert.Fail();
         }
 
+        /// <summary>
+        /// Setting a cell's contents to a formula should return the same formula string-wise
+        /// </summary>
         [TestMethod]
         public void Get_Cell_Contents_A1_Has_Formula_No_Circle()
         {
@@ -90,7 +97,72 @@ namespace SpreadsheetTests
             sheet.SetCellContents("A1", new Formula("B1+2"));
             if (!(sheet.GetCellContents("A1").ToString() == a))
                 Assert.Fail();
-            if (sheet.)
         }
+
+        /// <summary>
+        /// Setting a cell's contents to a formula should return the same formula
+        /// </summary>
+        [TestMethod]
+        public void Get_Cell_Contents_A1_Has_Formula_No_Circle_2()
+        {
+            Formula correctFormula = new Formula("B1+2");
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A1", correctFormula);
+            if (!(sheet.GetCellContents("A1").Equals(correctFormula)))
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// If you try to set a circular error it should throw a ccircular exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CircularException))]
+        public void Get_Cell_Contents_A1_Has_Formula_With_Circular_Error()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A1", new Formula("B1+2"));
+            sheet.SetCellContents("B1", new Formula("C2"));
+            sheet.SetCellContents("C2", new Formula("A1-1"));
+        }
+
+        /// <summary>
+        /// If you try to get a cell's contents with a bad name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Get_Cell_Contents_Bad_Name()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.GetCellContents("A01");
+        }
+
+        /// <summary>
+        /// If you try to get a cell's contents with a null name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Get_Cell_Contents_Null_Name()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.GetCellContents(null);
+        }
+
+        /// <summary>
+        /// This makes sure that getnamesofnonemptycells returns an empty set
+        /// </summary>
+        [TestMethod]
+        public void Get_Names_Of_All_Nonempty_Cells_No_Cells()
+        {
+            HashSet<string> names = new HashSet<string>();
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            foreach (string name in sheet.GetNamesOfAllNonemptyCells())
+            {
+                names.Add(name);
+            }
+
+            if (names.Count != 0)
+                Assert.Fail();
+        }
+
     }
 }

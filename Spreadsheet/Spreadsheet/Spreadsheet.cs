@@ -248,12 +248,12 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
            
             //this is how I revert the cell contents
             bool isString = false, isDouble = false, isFormula = false;
-            if (originalCellContents is string)
-                isString = true;
-            else if (originalCellContents is double)
+            if (originalCellContents is double)
                 isDouble = true;
             else if (originalCellContents is Formula)
                 isFormula = true;
+            else if (originalCellContents is string)
+                isString = true;
 
             //check for null
             if (name == null)
