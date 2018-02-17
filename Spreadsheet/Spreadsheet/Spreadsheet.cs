@@ -52,10 +52,16 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
     /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
-        //This is where I save all of the cells
+        //Fields 
+
+        /// <summary>
+        /// This is where I save all of the cells, with their names attached to them
+        /// </summary>
         private Dictionary<string,Cell> cells;
 
-        //This is where I keep track of all of the dependencies
+        /// <summary>
+        /// This is where I keep track of all of the dependencies of the spreadsheet.
+        /// </summary>
         private DependencyGraph graph;
 
         /// <summary>
@@ -115,12 +121,12 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override IEnumerable<string> GetNamesOfAllNonemptyCells()
         {
-            //return an empty list if there are no non-empty cells
-            if (cells == null)
+            //if there aren't any nonempty cells, return an empty list
+            if (cells.Count == 0)
                 return new List<string>();
 
             //otherwise return the cell names
-            else return cells.Keys;
+            return cells.Keys;
         }
 
         /// <summary>
@@ -204,7 +210,9 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (cells.TryGetValue(name, out Cell theCell))
             {
                 cells.Remove(name);
-                cells.Add(name, new Cell(name, text));
+
+                if (text != "")
+                    cells.Add(name, new Cell(name, text));
             }
 
             //otherwise add a new cell with the contents and return no dependents since it's a number
@@ -263,6 +271,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
                 throw new InvalidNameException();
 
+            //empty set for dependents
             HashSet<string> dependents = new HashSet<string>();
 
             //make sure that every variable in the formula is a valid cell name
@@ -287,9 +296,6 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             else
                 cells.Add(name, new Cell(name, formula));
 
-            //empty set for dependents
-            
-
             try
             {
                 //add name to the list of cells that depend on the value in this cell
@@ -301,7 +307,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 }
             }
 
-            catch (CircularException c)
+            catch (CircularException)
             {
                 //revert the graph to what is was before
                 this.graph = originalGraph;
@@ -349,7 +355,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 throw new InvalidNameException();
 
             //return the cells whose values depend on this cell
-            return graph.GetDependees(name);
+            return graph.GetDependents(name);
         }
     }
 }

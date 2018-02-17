@@ -137,6 +137,61 @@ namespace SpreadsheetTests
         }
 
         /// <summary>
+        /// If you try to set a cell's contents with a bad name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Set_Cell_Contents_Bad_Name()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A01","hi");
+        }
+
+        /// <summary>
+        /// If you try to set a cell's contents with a bad name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Set_Cell_Contents_Null_Name2()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents(null, new Formula("B2+2"));
+        }
+
+        /// <summary>
+        /// If you try to set a cell's contents with a bad name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Set_Cell_Contents_Bad_Name3()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("G01", new Formula("B2+2"));
+        }
+
+        /// <summary>
+        /// If you try to set a cell's contents with a bad name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Set_Cell_Contents_Bad_Name2()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents(null, "hi");
+        }
+
+        /// <summary>
+        /// If you try to set a cell's contents with a bad name it should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Set_Cell_Contents_Bad_Name4()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A01", 5.7);
+        }
+
+        /// <summary>
         /// If you try to get a cell's contents with a null name it should throw an exception
         /// </summary>
         [TestMethod]
@@ -164,5 +219,80 @@ namespace SpreadsheetTests
                 Assert.Fail();
         }
 
+        /// <summary>
+        /// This makes sure that getnamesofnonemptycells returns an empty set
+        /// </summary>
+        [TestMethod]
+        public void Get_Names_Of_All_Nonempty_Cells_Multiple_Cells()
+        {
+            HashSet<string> names = new HashSet<string>();
+            AbstractSpreadsheet sheet = new Spreadsheet();
+
+            sheet.SetCellContents("A1", new Formula("B1+2"));
+            sheet.SetCellContents("B1", new Formula("C2"));
+            sheet.SetCellContents("C2", new Formula("D1-1"));
+
+            foreach (string name in sheet.GetNamesOfAllNonemptyCells())
+                names.Add(name);
+
+            List<string> theNames = new List<string>();
+
+            foreach (string name in names)
+                theNames.Add(name);
+
+            List<string> theNames2 = new List<string>{"A1","B1","C2"};
+
+            if (theNames.Count != 3)
+                Assert.Fail();
+
+            if (theNames2.Count != 3)
+                Assert.Fail();
+
+            foreach (string name in theNames)
+            {
+                if (!(theNames2.Contains(name)))
+                    Assert.Fail();
+            }
+        }
+
+        /// <summary>
+        /// Adding a formula that contains a non-valid cell name should throw an exception
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void Formula_With_Non_Valid_Formula_Name()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents(null, new Formula("B+2"));
+        }
+
+        /// <summary>
+        /// Set cell contents to a number when the cell already contains contents
+        /// </summary>
+        [TestMethod]
+        public void Set_Contents_Already_Has_Contents_Number()
+        {
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A1","B1");
+            sheet.SetCellContents("A1", 2.0);
+
+            if ((double)sheet.GetCellContents("A1") != 2.0)
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// Set cell contents to a number when the cell already contains contents
+        /// </summary>
+        [TestMethod]
+        public void Set_Contents_Already_Has_Contents_Formula()
+        {
+            Formula theFormula = new Formula("B1+C45");
+            AbstractSpreadsheet sheet = new Spreadsheet();
+            sheet.SetCellContents("A1", "B1");
+            sheet.SetCellContents("A1", theFormula);
+
+            if (sheet.GetCellContents("A1").ToString() != theFormula.ToString())
+                Assert.Fail();
+        }
     }
 }
