@@ -77,7 +77,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 //otherwise, if everything is valid, set the cell to the values
                 this.Contents = contents;
                 this.Name = name;
-            }
+ }
         }
 
         /// <summary>
@@ -124,6 +124,10 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             //if there aren't any nonempty cells, return an empty list
             if (cells.Count == 0)
                 return new List<string>();
+
+            //HashSet<string> keys = new HashSet<string>();
+            //foreach (string name in cells.Keys)
+                //keys.Add(name);
 
             //otherwise return the cell names
             return cells.Keys;
@@ -199,6 +203,8 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             //check for null
             if (name == null)
                 throw new InvalidNameException();
+            if (text == null)
+                throw new ArgumentNullException();
 
             //check name validity
             if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
@@ -210,13 +216,14 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (cells.TryGetValue(name, out Cell theCell))
             {
                 cells.Remove(name);
-
+ 
+                //don't add a new cell if text is an empty string
                 if (text != "")
                     cells.Add(name, new Cell(name, text));
             }
 
-            //otherwise add a new cell with the contents and return no dependents since it's a number
-            else
+            //otherwise add a new cell with the contents if the text is nonempty
+            else if (text != "")
                 cells.Add(name, new Cell(name, text));
 
             //replace the dependees of this cell since it won't contain any cell names
