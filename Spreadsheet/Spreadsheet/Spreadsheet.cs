@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Formulas;
 using Dependencies;
 using System.IO;
+using System.Xml.Schema;
+using System.Xml;
 
 // Written by Joe Zachary and Eric Naegle for CS 3500, February 2018
 
@@ -70,17 +72,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// <summary>
         /// This is what we use to make sure that the strings used for cell names are what we want them to be.
         /// </summary>
-        private Regex isValid;
-
-        /// <summary>
-        /// True if this spreadsheet has been modified since it was created or saved
-        /// (whichever happened most recently); false otherwise.
-        /// </summary>
-        public override bool Changed
-        {
-            get => throw new NotImplementedException();
-            protected set => throw new NotImplementedException();
-        }
+        private Regex IsValid;
 
         /// <summary>
         /// Each cell has a name and contents. The contents could be a string, formula, or double
@@ -88,14 +80,22 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         private struct Cell
         {
             public object Contents { get; set; } //gives public visibility but forces the use of a method to get and set
+            public object Value{ get; set; } //each cell has a value, that is either string or double, that is not necessarily the same as the contents.
             public string Name { get; set; } //the get and set are already written right here
 
-            public Cell (string name, object contents)
+            /// <summary>
+            /// This is a constructor that allows you to set the value of the cell as well as the contents. I don't know if I'll need it.
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="contents"></param>
+            /// <param name="value"></param>
+            public Cell(string name, object contents, object value)
             {
                 //otherwise, if everything is valid, set the cell to the values
                 this.Contents = contents;
                 this.Name = name;
- }
+                this.Value = value;
+            }
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             this.cells = new Dictionary<string, Cell>();
             this.graph = new DependencyGraph();
 
-            this.isValid = new Regex("@.*");
+            this.IsValid = new Regex("^.*$");
         }
 
         /// Creates an empty Spreadsheet whose IsValid regular expression is provided as the parameter
@@ -115,7 +115,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             this.cells = new Dictionary<string, Cell>();
             this.graph = new DependencyGraph();
 
-            this.isValid = isValid;
+            this.IsValid = isValid;
         }
 
         /// Creates a Spreadsheet that is a duplicate of the spreadsheet saved in source.
@@ -149,7 +149,102 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// the new Spreadsheet's IsValid regular expression should be newIsValid.
         public Spreadsheet(TextReader source, Regex newIsValid)
         {
-            throw new NotImplementedException("You used a constructor that you haven't completed.");
+            this.cells = new Dictionary<string, Cell>();
+            this.graph = new DependencyGraph();
+
+            HashSet<string> cellNames = new HashSet<string>();
+            //this is where we store the isValid from the file that we read in.
+            string old;
+            IsValid = newIsValid;
+
+            //this will always be changed back to the right thing if the file is good.
+            Regex oldIsValid = newIsValid;
+
+            // Create an XmlSchemaSet object.
+            XmlSchemaSet sc = new XmlSchemaSet();
+
+            sc.Add(null,"Spreadsheet.xsd");
+
+            // Configure validation.
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ValidationType = ValidationType.Schema;
+            settings.Schemas = sc;
+            settings.ValidationEventHandler += ValidationCallback;
+
+            try
+            {
+                using (XmlReader reader = XmlReader.Create("SampleSavedSpreadsheet.xml", settings)) //change it back to source!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement())
+                        {
+                            switch (reader.Name)
+                            {
+                                case "cell":
+                                    string name = reader["name"];
+                                    string contents = reader["contents"];
+
+                                    //check for duplicate cell names
+                                    if (cellNames.Contains(name.ToUpper()))
+                                        throw new SpreadsheetReadException("DuplicateCells");
+                                    else cellNames.Add(name.ToUpper());
+
+                                    //check for invalid cell names
+                                    if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
+                                        throw new SpreadsheetReadException("Bad cell name");
+                                    if (!newIsValid.IsMatch(name.ToUpper()))
+                                        throw new SpreadsheetVersionException("Invalid cell name");
+                                    if (!oldIsValid.IsMatch(name.ToUpper()))
+                                        throw new SpreadsheetVersionException("Invalid cell name");
+
+                                    SetContentsOfCell(name,contents);
+                                    break;
+
+                                case "spreadhseet":
+                                    old = reader["IsValid"];
+                                    
+                                    // Throws the right exception if the regex doesn't work
+                                    try
+                                    {
+                                        oldIsValid = new Regex(old);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        throw new SpreadsheetReadException("The regex is bad");
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            catch (SpreadsheetReadException)
+            {
+                throw new SpreadsheetReadException("");
+            }
+
+            catch (SpreadsheetVersionException)
+            {
+                throw new SpreadsheetVersionException("");
+            }
+
+            catch (CircularException)
+            {
+                throw new SpreadsheetReadException("There was a circular dependency");
+            }
+
+            catch (Exception)
+            {
+                throw new IOException();
+            }
+        }
+
+        // Display any validation errors.
+        private static void ValidationCallback(object sender, ValidationEventArgs e)
+        {
+            Console.WriteLine(" *** Validation Error: {0}", e.Message);
         }
 
         /// <summary>
@@ -188,10 +283,6 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (cells.Count == 0)
                 return new List<string>();
 
-            //HashSet<string> keys = new HashSet<string>();
-            //foreach (string name in cells.Keys)
-                //keys.Add(name);
-
             //otherwise return the cell names
             return cells.Keys;
         }
@@ -224,12 +315,12 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (cells.TryGetValue(name, out Cell theCell))
             {
                 cells.Remove(name);
-                cells.Add(name, new Cell(name, number));
+                cells.Add(name, new Cell(name, number, number));
             }
             
             //otherwise add a new cell with the contents and return no dependents since it's a number
             else
-                cells.Add(name, new Cell(name, number));
+                cells.Add(name, new Cell(name, number, number));
 
             //replace the dependees of this cell since it won't contain any cell names
             graph.ReplaceDependees(name, new HashSet<string>());
@@ -282,12 +373,12 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
  
                 //don't add a new cell if text is an empty string
                 if (text != "")
-                    cells.Add(name, new Cell(name, text));
+                    cells.Add(name, new Cell(name, text, text));
             }
 
             //otherwise add a new cell with the contents if the text is nonempty
             else if (text != "")
-                cells.Add(name, new Cell(name, text));
+                cells.Add(name, new Cell(name, text, text));
 
             //replace the dependees of this cell since it won't contain any cell names
             graph.ReplaceDependees(name, new HashSet<string>());
@@ -335,7 +426,9 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
 
             //check for null
             if (name == null)
+            {
                 throw new InvalidNameException();
+            }
 
             //check name validity
             if (!(Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$")))
@@ -359,12 +452,28 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (cells.TryGetValue(name, out Cell theCell))
             {
                 cells.Remove(name);
-                cells.Add(name, new Cell(name, formula));
+
+                try
+                {
+                    cells.Add(name, new Cell(name, formula, formula.Evaluate(MyLookup)));
+                }
+                catch (Exception)
+                {
+                    cells.Add(name, new Cell(name, formula, new FormulaError()));
+                }
             }
 
             //otherwise add a new cell with the contents and return no dependents since it's a number
             else
-                cells.Add(name, new Cell(name, formula));
+                try
+                {
+                    cells.Add(name, new Cell(name, formula, formula.Evaluate(MyLookup)));
+                }
+
+                catch (Exception)
+                {
+                    cells.Add(name, new Cell(name, formula, new FormulaError()));
+                }
 
             try
             {
@@ -429,41 +538,6 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         }
 
         /// <summary>
-        /// Writes the contents of this spreadsheet to dest using an XML format.
-        /// The XML elements should be structured as follows:
-        ///
-        /// <spreadsheet IsValid="IsValid regex goes here">
-        ///   <cell name="cell name goes here" contents="cell contents go here"></cell>
-        ///   <cell name="cell name goes here" contents="cell contents go here"></cell>
-        ///   <cell name="cell name goes here" contents="cell contents go here"></cell>
-        /// </spreadsheet>
-        ///
-        /// The value of the IsValid attribute should be IsValid.ToString()
-        /// 
-        /// There should be one cell element for each non-empty cell in the spreadsheet.
-        /// If the cell contains a string, the string (without surrounding double quotes) should be written as the contents.
-        /// If the cell contains a double d, d.ToString() should be written as the contents.
-        /// If the cell contains a Formula f, f.ToString() with "=" prepended should be written as the contents.
-        ///
-        /// If there are any problems writing to dest, the method should throw an IOException.
-        /// </summary>
-        public override void Save(TextWriter dest)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// If name is null or invalid, throws an InvalidNameException.
-        ///
-        /// Otherwise, returns the value (as opposed to the contents) of the named cell.  The return
-        /// value should be either a string, a double, or a FormulaError.
-        /// </summary>
-        public override object GetCellValue(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// If content is null, throws an ArgumentNullException.
         ///
         /// Otherwise, if name is null or invalid, throws an InvalidNameException.
@@ -496,7 +570,225 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override ISet<string> SetContentsOfCell(string name, string content)
         {
-            throw new NotImplementedException();
+            Formula f;
+            // If content is null, throws an ArgumentNullException.
+            if (content == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            // Otherwise, if name is null or invalid, throws an InvalidNameException.
+            if (name == null || !IsValid.IsMatch(name.ToUpper()))
+            {
+                throw new InvalidNameException();
+            }
+
+            // Otherwise, if content parses as a double, the contents of the named cell becomes that double.
+            if (double.TryParse(content, out double dubResult))
+            {
+                Changed = true;
+                return UpdateValues(SetCellContents(name, dubResult)); //my update values method is called here to update all of the dependents
+            }
+
+            // Otherwise, if content begins with the character '=', an attempt is made
+            // to parse the remainder of content into a Formula f using the Formula
+            // constructor with s => s.ToUpper() as the normalizer and a validator that
+            // checks that s is a valid cell name as defined in the AbstractSpreadsheet
+            // class comment.  There are then three possibilities:
+            else if (content.ToCharArray().First<char>() == '=')
+            {
+                // I send in the validator that I made below to make sure that it's a valid cell name based on my regex and IsValid
+                f = new Formula(content.Substring(1), s => s.ToUpper(), V);
+
+                // (1) If the remainder of content cannot be parsed into a Formula, a Formulas.FormulaFormatException is thrown.
+                // this is handled by the formula class.
+
+                // (2) Otherwise, if changing the contents of the named cell to be f would cause a circular dependency, a CircularException is thrown.
+                // (3) Otherwise, the contents of the named cell becomes f.
+                Changed = true;
+                return UpdateValues(SetCellContents(name, f)); //my update values method is called here to update all of the dependents
+            }
+
+            // Otherwise, the contents of the named cell becomes content.
+            else
+            {
+                Changed = true;
+                return UpdateValues(SetCellContents(name, content)); //my update values method is called here to update all of the dependents
+            }
+
+            // If an exception is NOT thrown, the method returns a set consisting of
+            // name plus the names of all other cells whose value depends, directly
+            // or indirectly, on the named cell.
+        }
+
+        /// <summary>
+        /// Writes the contents of this spreadsheet to dest using an XML format.
+        /// The XML elements should be structured as follows:
+        ///
+        /// <spreadsheet IsValid="IsValid regex goes here">
+        ///   <cell name="cell name goes here" contents="cell contents go here"></cell>
+        ///   <cell name="cell name goes here" contents="cell contents go here"></cell>
+        ///   <cell name="cell name goes here" contents="cell contents go here"></cell>
+        /// </spreadsheet>
+        ///
+        /// The value of the IsValid attribute should be IsValid.ToString()
+        /// 
+        /// There should be one cell element for each non-empty cell in the spreadsheet.
+        /// If the cell contains a string, the string (without surrounding double quotes) should be written as the contents.
+        /// If the cell contains a double d, d.ToString() should be written as the contents.
+        /// If the cell contains a Formula f, f.ToString() with "=" prepended should be written as the contents.
+        ///
+        /// If there are any problems writing to dest, the method should throw an IOException.
+        /// </summary>
+        public override void Save(TextWriter dest)
+        {
+            using (XmlWriter writer = XmlWriter.Create("SavedSpreadsheet.xml")) //change this to dest!--------------------------------------------------------------------------------
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("spreadsheet");
+                writer.WriteAttributeString("IsValid",IsValid.ToString());
+
+                List<string> cellNames = new List<string>(cells.Keys);
+
+                for (int i = 0; i < cells.Count; i++)
+                {
+                    string name = cellNames[i];
+                    writer.WriteStartElement("cell");
+                    writer.WriteAttributeString("name", cellNames[i]);
+
+                    if (cells.TryGetValue(name, out Cell result))
+                    {
+                        if (result.Contents is Formula)
+                        {
+                            writer.WriteAttributeString("contents", "=" + result.Contents.ToString());
+                        }
+
+                        else if (result.Contents is double)
+                        {
+                            writer.WriteAttributeString("contents", result.Contents.ToString());
+                        }
+
+                        else
+                            writer.WriteAttributeString("contents", (string)result.Contents);
+                    }
+
+                    else throw new IOException();
+
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+
+            Changed = false;
+        }
+
+        /// <summary>
+        /// If name is null or invalid, throws an InvalidNameException.
+        ///
+        /// Otherwise, returns the value (as opposed to the contents) of the named cell.  The return
+        /// value should be either a string, a double, or a FormulaError.
+        /// </summary>
+        public override object GetCellValue(string name)
+        {
+            if (name == null || !IsValid.IsMatch(name.ToUpper()))
+                throw new InvalidNameException();
+    
+            if (cells.TryGetValue(name,out Cell result))
+            {
+                return result.Value;
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// True if this spreadsheet has been modified since it was created or saved
+        /// (whichever happened most recently); false otherwise.
+        /// </summary>
+        public override bool Changed
+        {
+            get; protected set;
+        }
+
+        //old code
+        //get => throw new NotImplementedException(); 
+        //protected set => throw new NotImplementedException();
+
+        /// <summary>
+        /// This is a validator that I made to make sure that cell names are good to go by using a regex and the IsValid regex.
+        /// 
+        /// A string is a valid cell name if and only if (1) s consists of one or more letters, 
+        /// followed by a non-zero digit, followed by zero or more digits AND (2) the C#
+        /// expression IsValid.IsMatch(s.ToUpper()) is true.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        private bool V(string s)
+        {
+            if (Regex.IsMatch(s, @"^[A-z]+[1-9][0-9]*$") && IsValid.IsMatch(s.ToUpper()))
+                return true;
+
+            else return false;
+        }
+
+        /// <summary>
+        /// Lookup used to find values of cells
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private double MyLookup(String name)
+        {
+            if (cells.TryGetValue(name, out Cell result))
+            {
+                if (result.Value is double)
+                {
+                    return (double)result.Value;
+                }
+
+                //WHAT KIND OF EXCEPTION IS THROWN IF A FORMULA IN A CELL REFERENCES A CELL WITH A STRING?------------------------------------------------------------------
+                else throw new UndefinedVariableException(name);
+            }
+
+            //IS THIS APPROPRIATE?
+            else
+            {
+                throw new UndefinedVariableException(name);
+            }
+        }
+
+        private ISet<string> UpdateValues (ISet<string> c)
+        {
+            //skip the first name, since we've already calculated it's value
+            int i = 0;
+
+            foreach (string name in c)
+            {
+                if (i != 0)
+                {
+                    if (cells.TryGetValue(name, out Cell theCell))
+                    {
+                        Formula contents = new Formula(theCell.Contents.ToString());
+                        cells.Remove(name);
+
+                        //if the formula doesn't evaluate right, set the contents to a FormulaError
+                        try
+                        {
+                            cells.Add(name, new Cell(name, contents, contents.Evaluate(MyLookup)));
+                        }
+
+                        catch (Exception)
+                        {
+                            cells.Add(name, new Cell(name, contents, new FormulaError()));
+                        }
+                    }
+                }
+
+                i++;
+            }
+
+            return c;
         }
     }
 }

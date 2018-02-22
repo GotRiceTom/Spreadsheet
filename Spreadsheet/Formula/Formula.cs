@@ -199,7 +199,9 @@ namespace Formulas
         public double Evaluate(Lookup lookup)
         {
             if (lookup == null)
+            {
                 throw new ArgumentNullException("Parameter cannot be null.");
+            }
 
             //This is how I make sure that the zero argument constructor works
             if (normalizedTokens == null)

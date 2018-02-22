@@ -4,12 +4,144 @@ using SS;
 using System.Text.RegularExpressions;
 using Formulas;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SpreadsheetTests
 {
     [TestClass]
-    public class TestingSpreadsheet
+    public class TestingSpreadsheet: Spreadsheet
     {
+        /// <summary>
+        /// This creates a spreadsheet, makes sure that it's good, makes sure that "changed" is true, then saves it.
+        /// I set my Spreadsheet class to save it to a file called "Saved Spreadsheet" in mt SpreadsheetTests project -> bin -> debug.
+        /// And then I check the cells visually.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Saving_A_File()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetContentsOfCell("A1", "10.0");
+            if ((double)sheet.GetCellValue("A1") != 10.0)
+                Assert.Fail();
+            sheet.SetContentsOfCell("B1", "hello");
+            if ((string)sheet.GetCellValue("B1") != "hello")
+                Assert.Fail();
+            sheet.SetContentsOfCell("C2", "=A1-5");
+            if ((double)sheet.GetCellValue("C2") != 5.0)
+                Assert.Fail();
+
+            if (sheet.Changed == false)
+                Assert.Fail();
+
+            //I send a useless stringwriter because I had the code ignore the source and tested with my own files in the Spreadsheet class.
+            sheet.Save(new StringWriter());
+
+            if (sheet.Changed == true)
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// This tests that a spreadsheet created from a file works correctly.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Reading_In_A_File()
+        {
+            Regex testingIsValid = new Regex("^.*$");
+            string filename = "SampleSavedSpreadsheet.xml";
+            StreamReader testingReader = File.OpenText(filename);
+
+            Spreadsheet sheet = new Spreadsheet(testingReader,testingIsValid);
+
+            if ((double)sheet.GetCellValue("A1") != 1.5)
+                Assert.Fail();
+            if ((double)sheet.GetCellValue("A2") != 8.0)
+                Assert.Fail();
+            if ((double)sheet.GetCellValue("A3") != 12+23)
+                Assert.Fail();
+            if ((string)sheet.GetCellValue("B2") != "Hello")
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// This is my first test that makes sure that cell values are working properly when given formulas. No recaltulation yet.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Simple_Values_With_Formulas_old_methods()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetCellContents("A1", 10.0);
+            if ((double)sheet.GetCellValue("A1") != 10.0)
+                Assert.Fail();
+            sheet.SetCellContents("B1", new Formula("A1"));
+            if ((double)sheet.GetCellValue("B1") != 10.0)
+                Assert.Fail();
+            sheet.SetCellContents("C2", new Formula("B1-5"));
+            if ((double)sheet.GetCellValue("C2") != 5.0)
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// This is my first test that makes sure that cell values are working properly when given doubles, strings, and formulas. No recaltulation yet.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Simple_Values_Old_Methods()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetCellContents("A1", 10.0);
+            if ((double)sheet.GetCellValue("A1") != 10.0)
+                Assert.Fail();
+            sheet.SetCellContents("B1", "hello");
+            if ((string)sheet.GetCellValue("B1") != "hello")
+                Assert.Fail();
+            sheet.SetCellContents("C2", new Formula("A1-5"));
+            if ((double)sheet.GetCellValue("C2") != 5.0)
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// This is my first test that makes sure that cell values are working properly when given doubles, strings, and formulas. No recaltulation yet.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Simple_Values_New_Methods()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetContentsOfCell("A1", "10.0");
+            if ((double)sheet.GetCellValue("A1") != 10.0)
+                Assert.Fail();
+            sheet.SetContentsOfCell("B1", "hello");
+            if ((string)sheet.GetCellValue("B1") != "hello")
+                Assert.Fail();
+            sheet.SetContentsOfCell("C2", "=A1-5");
+            if ((double)sheet.GetCellValue("C2") != 5.0)
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// This is my first test that makes sure that cell values are working properly when given formulas and recalculation.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Simple_Values_With_Formulas_And_Recalculation()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetContentsOfCell("A1", "10.0");
+            if ((double)sheet.GetCellValue("A1") != 10.0)
+                Assert.Fail();
+            sheet.SetContentsOfCell("B1", "=A1");
+            if ((double)sheet.GetCellValue("B1") != 10.0)
+                Assert.Fail();
+            sheet.SetContentsOfCell("C2", "=B1-5");
+            if ((double)sheet.GetCellValue("C2") != 5.0)
+                Assert.Fail();
+            sheet.SetContentsOfCell("A1", "15.0");
+            if ((double)sheet.GetCellValue("A1") != 15.0)
+                Assert.Fail();
+            if ((double)sheet.GetCellValue("B1") != 15.0)
+                Assert.Fail();
+            if ((double)sheet.GetCellValue("C2") != 10.0)
+                Assert.Fail();
+        }
+
+        //old tests for ps5 start here-------------------------------------------------------------------------------------------------------------------------------
         /// <summary>
         /// This shouldn't blow up if I've made my constructor properly.
         /// </summary>
@@ -26,7 +158,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Null_Cell_Name()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents(null,4.0);
         }
 
@@ -67,7 +199,7 @@ namespace SpreadsheetTests
         [TestMethod]
         public void Get_Cell_Contents_A1_Has_Double()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1", 5.0);
             if (!((double)sheet.GetCellContents("A1") == 5.0))
                 Assert.Fail();
@@ -79,7 +211,7 @@ namespace SpreadsheetTests
         [TestMethod]
         public void Get_Cell_Contents_A1_Has_String()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1", "hello");
             if (!((string)sheet.GetCellContents("A1") == "hello"))
                 Assert.Fail();
@@ -93,7 +225,7 @@ namespace SpreadsheetTests
         {
             Formula correctFormula = new Formula("B1+2");
             string a = correctFormula.ToString();
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1", new Formula("B1+2"));
             if (!(sheet.GetCellContents("A1").ToString() == a))
                 Assert.Fail();
@@ -106,7 +238,7 @@ namespace SpreadsheetTests
         public void Get_Cell_Contents_A1_Has_Formula_No_Circle_2()
         {
             Formula correctFormula = new Formula("B1+2");
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1", correctFormula);
             if (!(sheet.GetCellContents("A1").Equals(correctFormula)))
                 Assert.Fail();
@@ -119,7 +251,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(CircularException))]
         public void Get_Cell_Contents_A1_Has_Formula_With_Circular_Error()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1", new Formula("B1+2"));
             sheet.SetCellContents("B1", new Formula("C2"));
             sheet.SetCellContents("C2", new Formula("A1-1"));
@@ -143,7 +275,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Set_Cell_Contents_Bad_Name()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A01","hi");
         }
 
@@ -154,7 +286,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Set_Cell_Contents_Null_Name2()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents(null, new Formula("B2+2"));
         }
 
@@ -165,7 +297,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Set_Cell_Contents_Bad_Name3()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("G01", new Formula("B2+2"));
         }
 
@@ -176,7 +308,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Set_Cell_Contents_Bad_Name2()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents(null, "hi");
         }
 
@@ -187,7 +319,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Set_Cell_Contents_Bad_Name4()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A01", 5.7);
         }
 
@@ -226,7 +358,7 @@ namespace SpreadsheetTests
         public void Get_Names_Of_All_Nonempty_Cells_Multiple_Cells()
         {
             HashSet<string> names = new HashSet<string>();
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
 
             sheet.SetCellContents("A1", new Formula("B1+2"));
             sheet.SetCellContents("B1", new Formula("C2"));
@@ -262,7 +394,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Formula_With_Non_Valid_Formula_Name()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents(null, new Formula("B+2"));
         }
 
@@ -272,7 +404,7 @@ namespace SpreadsheetTests
         [TestMethod]
         public void Set_Contents_Already_Has_Contents_Number()
         {
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1","B1");
             sheet.SetCellContents("A1", 2.0);
 
@@ -287,7 +419,7 @@ namespace SpreadsheetTests
         public void Set_Contents_Already_Has_Contents_Formula()
         {
             Formula theFormula = new Formula("B1+C45");
-            AbstractSpreadsheet sheet = new Spreadsheet();
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
             sheet.SetCellContents("A1", "B1");
             sheet.SetCellContents("A1", theFormula);
 
@@ -345,7 +477,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Test4()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents(null, 1.5);
         }
 
@@ -353,14 +485,14 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Test5()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1A", 1.5);
         }
 
         [TestMethod()]
         public void Test6()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("Z7", 1.5);
             Assert.AreEqual(1.5, (double)s.GetCellContents("Z7"), 1e-9);
         }
@@ -370,7 +502,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void Test7()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A8", (string)null);
         }
 
@@ -378,7 +510,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Test8()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents(null, "hello");
         }
 
@@ -386,14 +518,14 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Test9()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("AZ", "hello");
         }
 
         [TestMethod()]
         public void Test10()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("Z7", "hello");
             Assert.AreEqual("hello", s.GetCellContents("Z7"));
         }
@@ -403,7 +535,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Test11()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents(null, new Formula("2"));
         }
 
@@ -411,14 +543,14 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(InvalidNameException))]
         public void Test12()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("AZ", new Formula("2"));
         }
 
         [TestMethod()]
         public void Test13()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("Z7", new Formula("3"));
             Formula f = (Formula)s.GetCellContents("Z7");
             Assert.AreEqual(3, f.Evaluate(x => 0), 1e-6);
@@ -429,7 +561,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(CircularException))]
         public void Test14()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", new Formula("A2"));
             s.SetCellContents("A2", new Formula("A1"));
         }
@@ -438,7 +570,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(CircularException))]
         public void Test15()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", new Formula("A2+A3"));
             s.SetCellContents("A3", new Formula("A4+A5"));
             s.SetCellContents("A5", new Formula("A6+A7"));
@@ -449,7 +581,7 @@ namespace SpreadsheetTests
         [ExpectedException(typeof(CircularException))]
         public void Test16()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             try
             {
                 s.SetCellContents("A1", new Formula("A2+A3"));
@@ -468,14 +600,14 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test17()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             Assert.IsFalse(s.GetNamesOfAllNonemptyCells().GetEnumerator().MoveNext());
         }
 
         [TestMethod()]
         public void Test18()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("B1", "");
             Assert.IsFalse(s.GetNamesOfAllNonemptyCells().GetEnumerator().MoveNext());
         }
@@ -483,7 +615,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test19()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("C2", "hello");
             s.SetCellContents("C2", "");
             Assert.IsFalse(s.GetNamesOfAllNonemptyCells().GetEnumerator().MoveNext());
@@ -492,7 +624,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test20()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("B1", "hello");
             AssertSetEqualsIgnoreCase(s.GetNamesOfAllNonemptyCells(), new string[] { "B1" });
         }
@@ -500,7 +632,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test21()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("B1", 52.25);
             AssertSetEqualsIgnoreCase(s.GetNamesOfAllNonemptyCells(), new string[] { "B1" });
         }
@@ -508,7 +640,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test22()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("B1", new Formula("3.5"));
             AssertSetEqualsIgnoreCase(s.GetNamesOfAllNonemptyCells(), new string[] { "B1" });
         }
@@ -516,7 +648,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test23()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", 17.2);
             s.SetCellContents("C1", "hello");
             s.SetCellContents("B1", new Formula("3.5"));
@@ -527,7 +659,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test24()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("B1", "hello");
             s.SetCellContents("C1", new Formula("5"));
             AssertSetEqualsIgnoreCase(s.SetCellContents("A1", 17.2), new string[] { "A1" });
@@ -536,7 +668,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test25()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", 17.2);
             s.SetCellContents("C1", new Formula("5"));
             AssertSetEqualsIgnoreCase(s.SetCellContents("B1", "hello"), new string[] { "B1" });
@@ -545,7 +677,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test26()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", 17.2);
             s.SetCellContents("B1", "hello");
             AssertSetEqualsIgnoreCase(s.SetCellContents("C1", new Formula("5")), new string[] { "C1" });
@@ -554,7 +686,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test27()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", new Formula("A2+A3"));
             s.SetCellContents("A2", 6);
             s.SetCellContents("A3", new Formula("A2+A4"));
@@ -567,7 +699,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test28()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", new Formula("A2+A3"));
             s.SetCellContents("A1", 2.5);
             Assert.AreEqual(2.5, (double)s.GetCellContents("A1"), 1e-9);
@@ -576,7 +708,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test29()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", new Formula("A2+A3"));
             s.SetCellContents("A1", "Hello");
             Assert.AreEqual("Hello", (string)s.GetCellContents("A1"));
@@ -585,7 +717,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test30()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", "Hello");
             s.SetCellContents("A1", new Formula("23"));
             Assert.AreEqual(23, ((Formula)s.GetCellContents("A1")).Evaluate(x => 0));
@@ -595,7 +727,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test31()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             s.SetCellContents("A1", new Formula("B1+B2"));
             s.SetCellContents("B1", new Formula("C1-C2"));
             s.SetCellContents("B2", new Formula("C3*C4"));
@@ -633,7 +765,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test35()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             ISet<String> cells = new HashSet<string>();
             for (int i = 1; i < 200; i++)
             {
@@ -659,7 +791,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test39()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             for (int i = 1; i < 200; i++)
             {
                 s.SetCellContents("A" + i, new Formula("A" + (i + 1)));
@@ -692,7 +824,7 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void Test43()
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             for (int i = 0; i < 500; i++)
             {
                 s.SetCellContents("A1" + i, new Formula("A1" + (i + 1)));
@@ -754,7 +886,7 @@ namespace SpreadsheetTests
 
         public void RunRandomizedTest(int seed, int size)
         {
-            AbstractSpreadsheet s = new Spreadsheet();
+            TestingSpreadsheet s = new TestingSpreadsheet();
             Random rand = new Random(seed);
             for (int i = 0; i < 10000; i++)
             {
