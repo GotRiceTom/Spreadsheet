@@ -12,6 +12,61 @@ namespace SpreadsheetTests
     public class TestingSpreadsheet: Spreadsheet
     {
         /// <summary>
+        /// Makes sure that an empty string is returned if we ask for the value of a cell that isn't in the dictionary.
+        /// </summary>
+        [TestMethod]
+        public void PS6_Get_Cell_VALUE_Doesnt_Exist_In_Dictionary()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            if ((string)sheet.GetCellValue("B7") != "")
+                Assert.Fail();
+        }
+
+        /// <summary>
+        /// Makes sure that a request for a cell value throws an exception if the name is invalid.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void PS6_Get_Cell_VALUE_Invalid_Name()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.GetCellValue("B07a");
+        }
+
+        /// <summary>
+        /// Makes sure that a request for a cell value throws an exception if the name is null
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void PS6_Get_Cell_VALUE_Null()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.GetCellValue(null);
+        }
+
+        /// <summary>
+        /// Makes sure that the right exception is thrown when we create a cell named null
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void PS6_Set_Name_Of_Cell_To_Null()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetContentsOfCell(null, "10.0");
+        }
+
+        /// <summary>
+        /// Makes sure that the right exception is thrown when we create a cell with null content.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void PS6_Set_Contents_Of_Cell_To_Null()
+        {
+            TestingSpreadsheet sheet = new TestingSpreadsheet();
+            sheet.SetContentsOfCell("D31", null);
+        }
+
+        /// <summary>
         /// This creates a spreadsheet, makes sure that it's good, makes sure that "changed" is true, then saves it.
         /// I set my Spreadsheet class to save it to a file called "Saved Spreadsheet" in mt SpreadsheetTests project -> bin -> debug.
         /// And then I check the cells visually.

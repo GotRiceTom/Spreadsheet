@@ -187,7 +187,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
 
                                     //check for duplicate cell names
                                     if (cellNames.Contains(name.ToUpper()))
-                                        throw new SpreadsheetReadException("DuplicateCells");
+                                        throw new SpreadsheetReadException("Duplicate cells");
                                     else cellNames.Add(name.ToUpper());
 
                                     //check for invalid cell names
@@ -201,7 +201,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                                     SetContentsOfCell(name,contents);
                                     break;
 
-                                case "spreadhseet":
+                                case "spreadsheet":
                                     old = reader["IsValid"];
                                     
                                     // Throws the right exception if the regex doesn't work
@@ -672,7 +672,8 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                             writer.WriteAttributeString("contents", (string)result.Contents);
                     }
 
-                    else throw new IOException();
+                    //not needed
+                    //else throw new IOException();
 
                     writer.WriteEndElement();
                 }
@@ -692,9 +693,11 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override object GetCellValue(string name)
         {
-            if (name == null || !IsValid.IsMatch(name.ToUpper()))
+            if (name == null || !IsValid.IsMatch(name.ToUpper()) || !Regex.IsMatch(name, @"^[A-z]+[1-9][0-9]*$"))
+            {
                 throw new InvalidNameException();
-    
+            }
+
             if (cells.TryGetValue(name,out Cell result))
             {
                 return result.Value;
@@ -711,10 +714,6 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         {
             get; protected set;
         }
-
-        //old code
-        //get => throw new NotImplementedException(); 
-        //protected set => throw new NotImplementedException();
 
         /// <summary>
         /// This is a validator that I made to make sure that cell names are good to go by using a regex and the IsValid regex.
@@ -778,6 +777,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                             cells.Add(name, new Cell(name, contents, contents.Evaluate(MyLookup)));
                         }
 
+                        //if evaluating the formula creates an exception, we catch it and we place a formula error in the cell instead.
                         catch (Exception)
                         {
                             cells.Add(name, new Cell(name, contents, new FormulaError()));
