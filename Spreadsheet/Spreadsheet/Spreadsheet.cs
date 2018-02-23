@@ -173,7 +173,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
 
             try
             {
-                using (XmlReader reader = XmlReader.Create("SampleSavedSpreadsheet.xml", settings)) //change it back to source!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------
+                using (XmlReader reader = XmlReader.Create(source, settings))
                 {
                     while (reader.Read())
                     {
@@ -642,7 +642,8 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
         /// </summary>
         public override void Save(TextWriter dest)
         {
-            using (XmlWriter writer = XmlWriter.Create("SavedSpreadsheet.xml")) //change this to dest!--------------------------------------------------------------------------------
+            //I tested this by changing dest to the name of the file that I wanted to test.
+            using (XmlWriter writer = XmlWriter.Create(dest))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("spreadsheet");
@@ -650,6 +651,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
 
                 List<string> cellNames = new List<string>(cells.Keys);
 
+                //loop through each cell name and save it as a cell in the xml file
                 for (int i = 0; i < cells.Count; i++)
                 {
                     string name = cellNames[i];
@@ -658,6 +660,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
 
                     if (cells.TryGetValue(name, out Cell result))
                     {
+                        //add an equals sign if it's a formula
                         if (result.Contents is Formula)
                         {
                             writer.WriteAttributeString("contents", "=" + result.Contents.ToString());
@@ -672,9 +675,6 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                             writer.WriteAttributeString("contents", (string)result.Contents);
                     }
 
-                    //not needed
-                    //else throw new IOException();
-
                     writer.WriteEndElement();
                 }
 
@@ -682,6 +682,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 writer.WriteEndDocument();
             }
 
+            //if we've saved, then the spreadsheet isn't "changed" anymore.
             Changed = false;
         }
 
