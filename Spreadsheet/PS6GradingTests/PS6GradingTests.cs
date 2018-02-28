@@ -784,6 +784,23 @@ namespace PS6GradingTests
         }
 
         [TestMethod()]
+        public void Eric_Formula1()
+        {
+            Formula22222(new Spreadsheet());
+        }
+        public void Formula22222(AbstractSpreadsheet ss)
+        {
+            Set(ss, "a3", "5.0");
+            Set(ss, "b1", "2.0");
+            Set(ss, "b2", "3.0");
+            Set(ss, "a2", "= b1 + b2");
+            Set(ss, "a1", "= a2 + a3");
+            VV(ss, "a1", 10.0, "a2", 5.0);
+            Set(ss, "b2", "4.0");
+            VV(ss, "a1", 11.0, "a2", 6.0);
+        }
+
+        [TestMethod()]
         public void Formula2()
         {
             Formula2(new Spreadsheet());

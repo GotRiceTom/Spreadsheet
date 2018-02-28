@@ -179,6 +179,9 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                     {
                         if (reader.IsStartElement())
                         {
+                            if (reader.Name != "cell" && reader.Name != "spreadsheet")
+                                throw new SpreadsheetReadException("Doesn't follow shema");
+
                             switch (reader.Name)
                             {
                                 case "cell":
@@ -196,7 +199,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                                     if (!newIsValid.IsMatch(name.ToUpper()))
                                         throw new SpreadsheetVersionException("Invalid cell name");
                                     if (!oldIsValid.IsMatch(name.ToUpper()))
-                                        throw new SpreadsheetVersionException("Invalid cell name");
+                                        throw new SpreadsheetReadException("Invalid cell name");
 
                                     SetContentsOfCell(name,contents);
                                     break;
@@ -219,6 +222,10 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                     }
                 }
             }
+            catch (ArgumentNullException)
+            {
+                throw new SpreadsheetReadException("");
+            }
 
             catch (SpreadsheetReadException)
             {
@@ -235,10 +242,10 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 throw new SpreadsheetReadException("There was a circular dependency");
             }
 
-            catch (Exception)
-            {
-                throw new IOException();
-            }
+            //catch (Exception)
+            //{
+            //    throw new IOException();
+            //}
         }
 
         // Display any validation errors.
@@ -267,6 +274,12 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             if (cells.TryGetValue(name, out Cell theCell))
             {
                 object contents = theCell.Contents;
+                return contents;
+            }
+
+            else if (cells.TryGetValue(name.ToUpper(), out Cell theCell2))
+            {
+                object contents = theCell2.Contents;
                 return contents;
             }
 
@@ -534,7 +547,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 throw new InvalidNameException();
 
             //return the cells whose values depend on this cell
-            return graph.GetDependents(name);
+            return graph.GetDependents(name.ToUpper());
         }
 
         /// <summary>
@@ -595,7 +608,7 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
             // constructor with s => s.ToUpper() as the normalizer and a validator that
             // checks that s is a valid cell name as defined in the AbstractSpreadsheet
             // class comment.  There are then three possibilities:
-            else if (content.ToCharArray().First<char>() == '=')
+            else if (content.ToCharArray().Length > 0 && content.ToCharArray().First<char>() == '=')
             {
                 // I send in the validator that I made below to make sure that it's a valid cell name based on my regex and IsValid
                 f = new Formula(content.Substring(1), s => s.ToUpper(), V);
@@ -745,6 +758,28 @@ namespace SS //this was originally Spreadsheet and I changed it to SS
                 if (result.Value is double)
                 {
                     return (double)result.Value;
+                }
+
+                //WHAT KIND OF EXCEPTION IS THROWN IF A FORMULA IN A CELL REFERENCES A CELL WITH A STRING?------------------------------------------------------------------
+                else throw new UndefinedVariableException(name);
+            }
+
+            else if (cells.TryGetValue(name.ToLower(), out Cell result2))
+            {
+                if (result2.Value is double)
+                {
+                    return (double)result2.Value;
+                }
+
+                //WHAT KIND OF EXCEPTION IS THROWN IF A FORMULA IN A CELL REFERENCES A CELL WITH A STRING?------------------------------------------------------------------
+                else throw new UndefinedVariableException(name);
+            }
+
+            else if (cells.TryGetValue(name.ToUpper(), out Cell result3))
+            {
+                if (result3.Value is double)
+                {
+                    return (double)result3.Value;
                 }
 
                 //WHAT KIND OF EXCEPTION IS THROWN IF A FORMULA IN A CELL REFERENCES A CELL WITH A STRING?------------------------------------------------------------------
