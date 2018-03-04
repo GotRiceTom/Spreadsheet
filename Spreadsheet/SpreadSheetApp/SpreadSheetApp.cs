@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace SpreadSheetApp
 {
 	public partial class SpreadSheetApp : Form
@@ -20,6 +21,17 @@ namespace SpreadSheetApp
 		private void SpreadSheetApp_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		private void textBox1_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+
+		private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			
 		}
 	}
 }
