@@ -108,7 +108,7 @@ namespace SpreadsheetTests
         public void PS6_Reading_In_A_File()
         {
             Regex testingIsValid = new Regex("^.*$");
-            string filename = "SampleSavedSpreadsheet.xml";
+            string filename = @"C:\Users\GotRiceTom\Source\Repos\bits-please\Spreadsheet\Spreadsheet\SampleSavedSpreadsheet.xml";
             StreamReader testingReader = File.OpenText(filename);
 
             Spreadsheet sheet = new Spreadsheet(testingReader,testingIsValid);
