@@ -15,11 +15,15 @@ namespace SpreadsheetGUI
 {
 	public partial class SpreadsheetGUI : Form
 	{
+
+
+		private Spreadsheet mainSpreadsheet;
 		public SpreadsheetGUI()
 		{
 			InitializeComponent();
+			setCellTextBoxToReadonly();
 
-			Spreadsheet mainSpreadsheet = new Spreadsheet();
+			mainSpreadsheet = new Spreadsheet();
 
 		
 		}
@@ -49,12 +53,18 @@ namespace SpreadsheetGUI
 			
 		}
 
-		private void panel3_Paint(object sender, PaintEventArgs e)
+		/// <summary>
+		/// This method for listen for close button.
+		/// This will close the current GUI program
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void CloseItem_Click(object sender, EventArgs e)
 		{
-
+			Close();
 		}
 
-		private void textBox1_TextChanged(object sender, EventArgs e)
+		private void panel3_Paint(object sender, PaintEventArgs e)
 		{
 
 		}
@@ -74,9 +84,68 @@ namespace SpreadsheetGUI
 
 		}
 
-		private void panel2_Paint(object sender, PaintEventArgs e)
+		private void Panel2_Paint(object sender, PaintEventArgs e)
 		{
 
+		}
+
+		private void panel1_Paint(object sender, PaintEventArgs e)
+		{
+
+		}
+
+
+		private void contentEdit_EnterKeyDown(object sender, PaintEventArgs e)
+		{
+
+		}
+
+		/// <summary>
+		/// Set 
+		/// </summary>
+		private void setCellTextBoxToReadonly()
+		{
+			//set the text box to be read only
+			CellNameTextBox.ReadOnly = true;
+			CellContentTextBox.ReadOnly = true;
+			CellValueTextBox.ReadOnly = true;
+
+			// set the text boxes to be gray
+			CellNameTextBox.BackColor = System.Drawing.SystemColors.Window;
+			CellContentTextBox.BackColor = System.Drawing.SystemColors.Window;
+			CellValueTextBox.BackColor = System.Drawing.SystemColors.Window;
+
+		}
+
+		private void ContentEditBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				
+				Close();
+			}
+			
+		}
+
+
+		/// <summary>
+		/// Every time the selection changes, this method is called with the
+		/// Spreadsheet as its parameter.  We display the current time in the cell.
+		/// </summary>
+		private void displaySelection(SSGui.SpreadsheetPanel sender)
+		{
+			int row, col;
+			
+			sender.GetSelection(out col, out row);
+
+			//call this method
+			displayCellTextBoxes(col, row);
+			
+		}
+
+		private void displayCellTextBoxes(int col, int row)
+		{
+			CellNameTextBox.Text = col + " " + row;
 		}
 	}
 }

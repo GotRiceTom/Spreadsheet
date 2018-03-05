@@ -34,11 +34,11 @@
 			this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveASToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.closeItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.ContentLabel = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.ContentEditLabel = new System.Windows.Forms.Label();
+			this.ContentEditBox = new System.Windows.Forms.TextBox();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.CellValueTextBox = new System.Windows.Forms.TextBox();
 			this.CellContentTextBox = new System.Windows.Forms.TextBox();
@@ -47,22 +47,23 @@
 			this.CellContentLabel = new System.Windows.Forms.Label();
 			this.CellNameLabel = new System.Windows.Forms.Label();
 			this.PanelContainEditAndOutput = new System.Windows.Forms.Panel();
-			this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
+			this.spreadsheetMainPanel = new SSGui.SpreadsheetPanel();
+			this.panel3 = new System.Windows.Forms.Panel();
 			this.menuStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.PanelContainEditAndOutput.SuspendLayout();
+			this.panel3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
 			// 
-			this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuToolStripMenuItem,
             this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(89, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(968, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -73,7 +74,7 @@
             this.newToolStripMenuItem1,
             this.saveToolStripMenuItem,
             this.saveASToolStripMenuItem,
-            this.closeToolStripMenuItem});
+            this.closeItem});
 			this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
 			this.menuToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.menuToolStripMenuItem.Text = "File";
@@ -103,12 +104,12 @@
 			this.saveASToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
 			this.saveASToolStripMenuItem.Text = "Save AS";
 			// 
-			// closeToolStripMenuItem
+			// closeItem
 			// 
-			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
-			this.closeToolStripMenuItem.Text = "Close";
-			this.closeToolStripMenuItem.Click += new System.EventHandler(this.menuToolStripMenuItem_Click);
+			this.closeItem.Name = "closeItem";
+			this.closeItem.Size = new System.Drawing.Size(115, 22);
+			this.closeItem.Text = "Close";
+			this.closeItem.Click += new System.EventHandler(this.CloseItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -118,33 +119,34 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.ContentLabel);
-			this.panel1.Controls.Add(this.textBox1);
+			this.panel1.Controls.Add(this.ContentEditLabel);
+			this.panel1.Controls.Add(this.ContentEditBox);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(699, 152);
 			this.panel1.TabIndex = 1;
+			this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
 			// 
-			// ContentLabel
+			// ContentEditLabel
 			// 
-			this.ContentLabel.AutoSize = true;
-			this.ContentLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.ContentLabel.Location = new System.Drawing.Point(0, 119);
-			this.ContentLabel.Name = "ContentLabel";
-			this.ContentLabel.Size = new System.Drawing.Size(64, 13);
-			this.ContentLabel.TabIndex = 1;
-			this.ContentLabel.Text = "Context Edit";
-			this.ContentLabel.Click += new System.EventHandler(this.label1_Click);
+			this.ContentEditLabel.AutoSize = true;
+			this.ContentEditLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.ContentEditLabel.Location = new System.Drawing.Point(0, 119);
+			this.ContentEditLabel.Name = "ContentEditLabel";
+			this.ContentEditLabel.Size = new System.Drawing.Size(65, 13);
+			this.ContentEditLabel.TabIndex = 1;
+			this.ContentEditLabel.Text = "Content Edit";
+			this.ContentEditLabel.Click += new System.EventHandler(this.label1_Click);
 			// 
-			// textBox1
+			// ContentEditBox
 			// 
-			this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.textBox1.Location = new System.Drawing.Point(0, 132);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(699, 20);
-			this.textBox1.TabIndex = 0;
-			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			this.ContentEditBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.ContentEditBox.Location = new System.Drawing.Point(0, 132);
+			this.ContentEditBox.Name = "ContentEditBox";
+			this.ContentEditBox.Size = new System.Drawing.Size(699, 20);
+			this.ContentEditBox.TabIndex = 0;
+			this.ContentEditBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ContentEditBox_KeyDown);
 			// 
 			// panel2
 			// 
@@ -159,7 +161,7 @@
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(263, 152);
 			this.panel2.TabIndex = 2;
-			this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+			this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel2_Paint);
 			// 
 			// CellValueTextBox
 			// 
@@ -223,22 +225,32 @@
 			this.PanelContainEditAndOutput.TabIndex = 3;
 			this.PanelContainEditAndOutput.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
 			// 
-			// spreadsheetPanel1
+			// spreadsheetMainPanel
 			// 
-			this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 152);
-			this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-			this.spreadsheetPanel1.Size = new System.Drawing.Size(968, 434);
-			this.spreadsheetPanel1.TabIndex = 4;
+			this.spreadsheetMainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.spreadsheetMainPanel.Location = new System.Drawing.Point(0, 152);
+			this.spreadsheetMainPanel.Name = "spreadsheetMainPanel";
+			this.spreadsheetMainPanel.Size = new System.Drawing.Size(968, 410);
+			this.spreadsheetMainPanel.TabIndex = 4;
+			this.spreadsheetMainPanel.SelectionChanged += new SSGui.SelectionChangedHandler(this.displaySelection);
+			// 
+			// panel3
+			// 
+			this.panel3.Controls.Add(this.spreadsheetMainPanel);
+			this.panel3.Controls.Add(this.PanelContainEditAndOutput);
+			this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel3.Location = new System.Drawing.Point(0, 24);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(968, 562);
+			this.panel3.TabIndex = 5;
 			// 
 			// SpreadsheetGUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(968, 586);
-			this.Controls.Add(this.spreadsheetPanel1);
+			this.Controls.Add(this.panel3);
 			this.Controls.Add(this.menuStrip1);
-			this.Controls.Add(this.PanelContainEditAndOutput);
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "SpreadsheetGUI";
 			this.Text = "SpreadsheetGUI";
@@ -250,6 +262,7 @@
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
 			this.PanelContainEditAndOutput.ResumeLayout(false);
+			this.panel3.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -260,8 +273,8 @@
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label ContentLabel;
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Label ContentEditLabel;
+		private System.Windows.Forms.TextBox ContentEditBox;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.TextBox CellValueTextBox;
 		private System.Windows.Forms.TextBox CellContentTextBox;
@@ -270,13 +283,14 @@
 		private System.Windows.Forms.Label CellContentLabel;
 		private System.Windows.Forms.Label CellNameLabel;
 		private System.Windows.Forms.Panel PanelContainEditAndOutput;
-		private SSGui.SpreadsheetPanel spreadsheetPanel1;
+		private SSGui.SpreadsheetPanel spreadsheetMainPanel;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveASToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem closeItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private System.Windows.Forms.Panel panel3;
 	}
 }
 
