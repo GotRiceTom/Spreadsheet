@@ -37,10 +37,11 @@
 			// 
 			// spreadsheetPanel1
 			// 
+			this.spreadsheetPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 24);
 			this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-			this.spreadsheetPanel1.Size = new System.Drawing.Size(1062, 591);
+			this.spreadsheetPanel1.Size = new System.Drawing.Size(986, 651);
 			this.spreadsheetPanel1.TabIndex = 0;
 			// 
 			// menuStrip1
@@ -50,7 +51,7 @@
             this.fileToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(1062, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(986, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -73,7 +74,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1062, 615);
+			this.ClientSize = new System.Drawing.Size(986, 675);
 			this.Controls.Add(this.spreadsheetPanel1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
