@@ -18,6 +18,7 @@ namespace SpreadsheetGUI
 
 
 		private Spreadsheet mainSpreadsheet;
+
 		public SpreadsheetGUI()
 		{
 			InitializeComponent();
