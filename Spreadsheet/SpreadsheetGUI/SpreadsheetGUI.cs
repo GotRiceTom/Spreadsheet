@@ -26,5 +26,30 @@ namespace SpreadsheetGUI
 		{
 
 		}
+
+		private void textBox2_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void label1_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void SpreadsheetGUI_Load(object sender, EventArgs e)
+		{
+
+		}
+
+		private void menuToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void panel3_Paint(object sender, PaintEventArgs e)
+		{
+
+		}
 	}
 }
