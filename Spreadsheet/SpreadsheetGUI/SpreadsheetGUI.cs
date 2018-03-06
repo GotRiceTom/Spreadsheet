@@ -136,7 +136,6 @@ namespace SpreadsheetGUI
 
         }
 
-
         private string columLetters(int col)
         {
             switch (col) {

@@ -38,6 +38,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ContentEditLabel = new System.Windows.Forms.Label();
+            this.ChangeButton = new System.Windows.Forms.Button();
             this.ContentEditBox = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.CellValueTextBox = new System.Windows.Forms.TextBox();
@@ -49,7 +50,6 @@
             this.PanelContainEditAndOutput = new System.Windows.Forms.Panel();
             this.spreadsheetMainPanel = new SSGui.SpreadsheetPanel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.ChangeButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -83,32 +83,32 @@
             // NewSS_Click
             // 
             this.NewSS_Click.Name = "NewSS_Click";
-            this.NewSS_Click.Size = new System.Drawing.Size(152, 22);
+            this.NewSS_Click.Size = new System.Drawing.Size(115, 22);
             this.NewSS_Click.Text = "New";
             this.NewSS_Click.Click += new System.EventHandler(this.NewSS_Click_Click);
             // 
             // newToolStripMenuItem1
             // 
             this.newToolStripMenuItem1.Name = "newToolStripMenuItem1";
-            this.newToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem1.Size = new System.Drawing.Size(115, 22);
             this.newToolStripMenuItem1.Text = "Open";
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // saveASToolStripMenuItem
             // 
             this.saveASToolStripMenuItem.Name = "saveASToolStripMenuItem";
-            this.saveASToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveASToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.saveASToolStripMenuItem.Text = "Save AS";
             // 
             // closeItem
             // 
             this.closeItem.Name = "closeItem";
-            this.closeItem.Size = new System.Drawing.Size(152, 22);
+            this.closeItem.Size = new System.Drawing.Size(115, 22);
             this.closeItem.Text = "Close";
             this.closeItem.Click += new System.EventHandler(this.CloseItem_Click);
             // 
@@ -137,6 +137,16 @@
             this.ContentEditLabel.Size = new System.Drawing.Size(65, 13);
             this.ContentEditLabel.TabIndex = 1;
             this.ContentEditLabel.Text = "Content Edit";
+            // 
+            // ChangeButton
+            // 
+            this.ChangeButton.Location = new System.Drawing.Point(0, 92);
+            this.ChangeButton.Name = "ChangeButton";
+            this.ChangeButton.Size = new System.Drawing.Size(158, 34);
+            this.ChangeButton.TabIndex = 2;
+            this.ChangeButton.Text = "Change Content";
+            this.ChangeButton.UseVisualStyleBackColor = true;
+            this.ChangeButton.Click += new System.EventHandler(this.ChangeButton_Click);
             // 
             // ContentEditBox
             // 
@@ -236,16 +246,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(968, 562);
             this.panel3.TabIndex = 5;
-            // 
-            // ChangeButton
-            // 
-            this.ChangeButton.Location = new System.Drawing.Point(0, 92);
-            this.ChangeButton.Name = "ChangeButton";
-            this.ChangeButton.Size = new System.Drawing.Size(158, 34);
-            this.ChangeButton.TabIndex = 2;
-            this.ChangeButton.Text = "Change Content";
-            this.ChangeButton.UseVisualStyleBackColor = true;
-            this.ChangeButton.Click += new System.EventHandler(this.ChangeButton_Click);
             // 
             // SpreadsheetGUI
             // 
