@@ -30,8 +30,8 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.hellpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CenterPanel = new System.Windows.Forms.Panel();
             this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
@@ -63,25 +63,25 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
-            this.closeToolStripMenuItem});
+            this.newWindow,
+            this.closeWindow});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // newToolStripMenuItem
+            // newWindow
             // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.newToolStripMenuItem.Text = "New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
+            this.newWindow.Name = "newWindow";
+            this.newWindow.Size = new System.Drawing.Size(152, 22);
+            this.newWindow.Text = "New";
+            this.newWindow.Click += new System.EventHandler(this.NewSpreadsheet_Click);
             // 
-            // closeToolStripMenuItem
+            // closeWindow
             // 
-            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.closeToolStripMenuItem.Text = "Close";
-            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            this.closeWindow.Name = "closeWindow";
+            this.closeWindow.Size = new System.Drawing.Size(152, 22);
+            this.closeWindow.Text = "Close";
+            this.closeWindow.Click += new System.EventHandler(this.CloseSpreadsheet_Click);
             // 
             // hellpToolStripMenuItem
             // 
@@ -94,9 +94,9 @@
             this.CenterPanel.Controls.Add(this.spreadsheetPanel1);
             this.CenterPanel.Controls.Add(this.TopPanelOfMain);
             this.CenterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CenterPanel.Location = new System.Drawing.Point(0, 24);
+            this.CenterPanel.Location = new System.Drawing.Point(0, 0);
             this.CenterPanel.Name = "CenterPanel";
-            this.CenterPanel.Size = new System.Drawing.Size(1139, 591);
+            this.CenterPanel.Size = new System.Drawing.Size(1139, 615);
             this.CenterPanel.TabIndex = 1;
             // 
             // spreadsheetPanel1
@@ -104,21 +104,20 @@
             this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 111);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 480);
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 504);
             this.spreadsheetPanel1.TabIndex = 3;
-            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.displaySelection);
-            this.spreadsheetPanel1.Load += new System.EventHandler(this.spreadsheetPanel1_Load);
             // 
             // TopPanelOfMain
             // 
-            this.TopPanelOfMain.Controls.Add(this.CellValueLabel);
-            this.TopPanelOfMain.Controls.Add(this.CellContentLabel);
-            this.TopPanelOfMain.Controls.Add(this.CellNameLabel);
             this.TopPanelOfMain.Controls.Add(this.CellValueText);
             this.TopPanelOfMain.Controls.Add(this.CellContentTex);
             this.TopPanelOfMain.Controls.Add(this.CellNameText);
+            this.TopPanelOfMain.Controls.Add(this.CellValueLabel);
+            this.TopPanelOfMain.Controls.Add(this.CellContentLabel);
+            this.TopPanelOfMain.Controls.Add(this.CellNameLabel);
             this.TopPanelOfMain.Controls.Add(this.ChangeButton);
             this.TopPanelOfMain.Controls.Add(this.ContentEditTextBox);
+            this.TopPanelOfMain.Controls.Add(this.menuStrip1);
             this.TopPanelOfMain.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopPanelOfMain.Location = new System.Drawing.Point(0, 0);
             this.TopPanelOfMain.Name = "TopPanelOfMain";
@@ -181,7 +180,6 @@
             this.ChangeButton.TabIndex = 1;
             this.ChangeButton.Text = "Change Content";
             this.ChangeButton.UseVisualStyleBackColor = true;
-            this.ChangeButton.Click += new System.EventHandler(this.ChangeButton_Click);
             // 
             // ContentEditTextBox
             // 
@@ -196,7 +194,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1139, 615);
             this.Controls.Add(this.CenterPanel);
-            this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Spreadsheet_V2";
             this.Text = "Cell Name";
@@ -206,7 +203,6 @@
             this.TopPanelOfMain.ResumeLayout(false);
             this.TopPanelOfMain.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -214,8 +210,8 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newWindow;
+        private System.Windows.Forms.ToolStripMenuItem closeWindow;
         private System.Windows.Forms.ToolStripMenuItem hellpToolStripMenuItem;
         private System.Windows.Forms.Panel CenterPanel;
         private SSGui.SpreadsheetPanel spreadsheetPanel1;

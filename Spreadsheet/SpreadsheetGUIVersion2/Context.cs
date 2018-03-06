@@ -43,6 +43,7 @@ namespace SpreadsheetGUIVersion2
         {
             // Create the window
             Spreadsheet_V2 window = new Spreadsheet_V2();
+            new SpreadsheetControllers(window);
 
             // One more form is running
             windowCount++;
@@ -55,4 +56,3 @@ namespace SpreadsheetGUIVersion2
         }
     }
 }
-
