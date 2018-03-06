@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Formulas;
 using Dependencies;
 using SS;
+using SSGui;
 
 namespace SpreadsheetGUI
 {
@@ -38,10 +39,6 @@ namespace SpreadsheetGUI
 
 		}
 
-		private void textBox2_TextChanged(object sender, EventArgs e)
-		{
-
-		}
 
 		/// <summary>
 		/// This method for listen for close button.
@@ -55,10 +52,6 @@ namespace SpreadsheetGUI
 		}
 
 
-		private void contentEdit_EnterKeyDown(object sender, PaintEventArgs e)
-		{
-
-		}
 
 		/// <summary>
 		/// Set 
@@ -77,23 +70,22 @@ namespace SpreadsheetGUI
 
 		}
 
-		private void ContentEditBox_KeyDown(object sender, KeyEventArgs e)
-		{
-
-        }
-
-
         /// <summary>
         /// Every time the selection changes, this method is called with the
         /// Spreadsheet as its parameter.  
         /// </summary>
-        private void displaySelection(SSGui.SpreadsheetPanel sender)
+        private void displaySelection(SpreadsheetPanel sender)
 		{
 			
 			sender.GetSelection(out col, out row);
 
             string cellNamed = columLetters(col) + "" + (row + 1);
 
+            //display the content of the current cell on the content editor text box
+            ContentEditBox.Text = mainSpreadsheet.GetCellContents(cellNamed).ToString();
+
+
+            // display the value on the grid
             sender.SetValue(col, row, mainSpreadsheet.GetCellValue(cellNamed).ToString());
 
 			//call this method
@@ -111,6 +103,36 @@ namespace SpreadsheetGUI
 			CellNameTextBox.Text = cellNamed;
             CellContentTextBox.Text = mainSpreadsheet.GetCellContents(cellNamed).ToString();
             CellValueTextBox.Text = mainSpreadsheet.GetCellValue(cellNamed).ToString();
+
+        }
+
+
+
+        /// <summary>
+        /// Create new Spreadsheet form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewSS_Click_Click(object sender, EventArgs e)
+        {
+            SpreadsheetContext.GetContext().RunNew();
+        }
+
+
+
+        private void ChangeButton_Click(object sender, EventArgs e)
+        {
+
+            // get string from contentEdit box
+            string getContentEdit = ContentEditBox.Text;
+
+            //get cell name
+            string cellNamed = columLetters(col) + "" + (row + 1);
+
+            // add it to the spreadsheet class
+            mainSpreadsheet.SetContentsOfCell(cellNamed, getContentEdit);
+
+            displayCellTextBoxes(cellNamed);
 
         }
 
@@ -203,33 +225,5 @@ namespace SpreadsheetGUI
         }
 
 
-        /// <summary>
-        /// Create new Spreadsheet form
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NewSS_Click_Click(object sender, EventArgs e)
-        {
-            SpreadsheetContext.GetContext().RunNew();
-        }
-
-        private void ChangeButton_Click(object sender, EventArgs e)
-        {
-
-            //get the current cell address
-
-
-            // get string from contentEdit box
-            string temp = ContentEditBox.Text;
-            // add it to the spreadsheet class
-
-            mainSpreadsheet.SetContentsOfCell(columLetters(col) + "" + (row + 1), temp);
-            //display the value on the selecting cell
-
-
-           // displaySelection(sender);
-
-
-        }
     }
 }
