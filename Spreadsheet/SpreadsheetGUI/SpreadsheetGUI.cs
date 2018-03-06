@@ -148,5 +148,10 @@ namespace SpreadsheetGUI
 		{
 			CellNameTextBox.Text = col + " " + row;
 		}
-	}
+
+        private void NewSS_Click_Click(object sender, EventArgs e)
+        {
+            SpreadsheetContext.GetContext().RunNew();
+        }
+    }
 }
