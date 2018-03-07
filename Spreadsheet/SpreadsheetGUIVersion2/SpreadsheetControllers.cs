@@ -54,11 +54,12 @@ namespace SpreadsheetGUIVersion2
             //combine colLetter and row to get the cell name
             string currentCellNamed = colLetter + "" + (row + 1);
 
-            window.displaySelection(sender, currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed) );
+            window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed) );
         }
 
         private void HandleChangeButton(string cellEditContent)
         {
+           if (panel != null) { 
             panel.GetSelection(out int col, out int row);
             //Get Letter of col
             string colLetter = columLetters(col);
@@ -67,14 +68,32 @@ namespace SpreadsheetGUIVersion2
             string currentCellNamed = colLetter + "" + (row + 1);
 
             //set content
-            MainSpreadsheet.SetContentsOfCell(currentCellNamed, cellEditContent);
+            HashSet<String> cellList = new HashSet<string>(MainSpreadsheet.SetContentsOfCell(currentCellNamed, cellEditContent));
+
+            panel.SetValue(col, row, MainSpreadsheet.GetCellValue(currentCellNamed).ToString());
+
+            foreach (string name in cellList)
+            {
+                if (currentCellNamed != name)
+                {
+                    int colNum = columNumber(name[0].ToString());
+                    int rowNum = Int32.Parse(name.Substring(1));
+
+
+                    panel.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(name).ToString());
+                }
+            }
 
             // callback
-            window.displayValueOnPanel(panel, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
-
-            
-            
+            // display the top- right content box
+            window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
         }
+
+            else
+            {
+                window.DialogBoxOFNoCellIsSelected();
+            }
+ }
 
 
 

@@ -106,7 +106,7 @@
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
             this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 504);
             this.spreadsheetPanel1.TabIndex = 3;
-            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.display_selectionchange);
+            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.Display_selectionchange);
             // 
             // TopPanelOfMain
             // 
@@ -189,6 +189,7 @@
             this.ContentEditTextBox.Name = "ContentEditTextBox";
             this.ContentEditTextBox.Size = new System.Drawing.Size(470, 20);
             this.ContentEditTextBox.TabIndex = 0;
+         
             // 
             // Spreadsheet_V2
             // 

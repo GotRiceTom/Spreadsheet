@@ -21,12 +21,12 @@ namespace SpreadsheetGUIVersion2
         void OpenNew();
 
 
-        void displaySelection(SpreadsheetPanel sender, string cellName, Object content, Object value);
+         void DisplaySelection(string cellName, Object content, Object value);
 
 
-        void displayValueOnPanel(SpreadsheetPanel sender, Object content, Object value);
+         void DisplayValueOnPanel(SpreadsheetPanel sender, Object content, Object value);
 
-        // a method to recalucate all the cells value on the grid panel
+        void DialogBoxOFNoCellIsSelected();
 
 
     }

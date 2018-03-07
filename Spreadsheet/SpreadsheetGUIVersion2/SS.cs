@@ -13,7 +13,7 @@ namespace SpreadsheetGUIVersion2
         public Spreadsheet_V2()
         {
             InitializeComponent();
-            setCellTextBoxToReadonly();
+            SetCellTextBoxToReadonly();
 
         }
 
@@ -50,7 +50,7 @@ namespace SpreadsheetGUIVersion2
         /// <param name="sender"></param>
         /// <param name="content"></param>
         /// <param name="value"></param>
-        public void displayValueOnPanel(SpreadsheetPanel sender, Object content, Object value)
+        public void DisplayValueOnPanel(SpreadsheetPanel sender, Object content, Object value)
         {
            // get coords
             sender.GetSelection(out int col, out int row);
@@ -63,7 +63,7 @@ namespace SpreadsheetGUIVersion2
             CellValueText.Text = value.ToString();
         }
 
-        public void displaySelection(SpreadsheetPanel sender, string cellNamed, Object cellContent, Object cellValue)
+        public void DisplaySelection(string cellNamed, Object cellContent, Object cellValue)
         {
             //display the content on the contentEditBox
             ContentEditTextBox.Text = cellContent.ToString();
@@ -71,6 +71,12 @@ namespace SpreadsheetGUIVersion2
             CellNameText.Text = cellNamed;
             CellContentText.Text = cellContent.ToString();
             CellValueText.Text = cellValue.ToString();
+        }
+
+
+        public void DialogBoxOFNoCellIsSelected()
+        {
+            MessageBox.Show("Please select a cell before before click change");
         }
 
         
@@ -108,7 +114,7 @@ namespace SpreadsheetGUIVersion2
         /// Fired up the SelectionChangeEvent
         /// </summary>
         /// <param name="sender"></param>
-        private void display_selectionchange(SpreadsheetPanel sender)
+        private void Display_selectionchange(SpreadsheetPanel sender)
         {
 
             if (SelectionChangeEvent != null)
@@ -133,7 +139,7 @@ namespace SpreadsheetGUIVersion2
             }
         }
 
-        private void setCellTextBoxToReadonly()
+        private void SetCellTextBoxToReadonly()
         {
             //set the text box to be read only
             CellNameText.ReadOnly = true;
@@ -147,6 +153,5 @@ namespace SpreadsheetGUIVersion2
 
         }
 
-      
     }
 }
