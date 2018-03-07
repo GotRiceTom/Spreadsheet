@@ -8,14 +8,13 @@ namespace SpreadsheetGUIVersion2
     public partial class Spreadsheet_V2 : Form, SpreadsheetView
     {
 
-        private SpreadsheetPanel MainSheetPanel;
+       
 
         public Spreadsheet_V2()
         {
             InitializeComponent();
             setCellTextBoxToReadonly();
-            MainSheetPanel = new SpreadsheetPanel();
-          
+
         }
 
 
@@ -28,22 +27,38 @@ namespace SpreadsheetGUIVersion2
         public event Action<SpreadsheetPanel> SelectionChangeEvent;
         
 
+        /// <summary>
+        /// Close the App
+        /// </summary>
         public void DoClose()
         {
             Close();
         }
 
+        /// <summary>
+        /// Open a new app of Spreadsheet
+        /// </summary>
         public void OpenNew()
         {
             
             SpreadsheetContext.GetContext().RunNew();
         }
 
+        /// <summary>
+        /// Display the current cell value when change button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="content"></param>
+        /// <param name="value"></param>
         public void displayValueOnPanel(SpreadsheetPanel sender, Object content, Object value)
         {
-           
+           // get coords
             sender.GetSelection(out int col, out int row);
+
+            // set value at coords
             sender.SetValue(col, row, value.ToString());
+
+            //Display the current cell's information
             CellContentText.Text = content.ToString();
             CellValueText.Text = value.ToString();
         }
@@ -59,6 +74,11 @@ namespace SpreadsheetGUIVersion2
 
         
 
+        /// <summary>
+        /// Fired up the NewEvent
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewSpreadsheet_Click(object sender, EventArgs e)
         {
 
@@ -69,6 +89,11 @@ namespace SpreadsheetGUIVersion2
             
         }
 
+        /// <summary>
+        /// Fired up the CloseEvent
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseSpreadsheet_Click(object sender, EventArgs e)
         {
             if (CloseEvent != null)
@@ -78,6 +103,10 @@ namespace SpreadsheetGUIVersion2
             
         }
 
+        /// <summary>
+        /// Fired up the SelectionChangeEvent
+        /// </summary>
+        /// <param name="sender"></param>
         private void display_selectionchange(SpreadsheetPanel sender)
         {
 
@@ -88,6 +117,11 @@ namespace SpreadsheetGUIVersion2
             }
         }
 
+        /// <summary>
+        /// Fired up the ChangeButtonEvent
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void ChangeButton_Click(object sender, EventArgs e)
         {
