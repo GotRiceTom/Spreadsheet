@@ -65,6 +65,7 @@ namespace SpreadsheetGUIVersion2
 
         public void displaySelection(SpreadsheetPanel sender, string cellNamed, Object cellContent, Object cellValue)
         {
+            //display the content on the contentEditBox
             ContentEditTextBox.Text = cellContent.ToString();
 
             CellNameText.Text = cellNamed;
@@ -98,7 +99,7 @@ namespace SpreadsheetGUIVersion2
         {
             if (CloseEvent != null)
             {
-                CloseEvent() ;
+                CloseEvent();
             }
             
         }
