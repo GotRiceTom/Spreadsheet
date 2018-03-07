@@ -68,25 +68,40 @@ namespace SpreadsheetGUIVersion2
             string currentCellNamed = colLetter + "" + (row + 1);
 
             //set content
-            HashSet<String> cellList = new HashSet<string>(MainSpreadsheet.SetContentsOfCell(currentCellNamed, cellEditContent));
-
-            panel.SetValue(col, row, MainSpreadsheet.GetCellValue(currentCellNamed).ToString());
-
-            foreach (string name in cellList)
+            try
             {
-                if (currentCellNamed != name)
-                {
-                    int colNum = columNumber(name[0].ToString());
-                    int rowNum = Int32.Parse(name.Substring(1));
+                HashSet<String> cellList = new HashSet<string>(MainSpreadsheet.SetContentsOfCell(currentCellNamed, cellEditContent));
 
 
-                    panel.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(name).ToString());
+                    panel.SetValue(col, row, MainSpreadsheet.GetCellValue(currentCellNamed).ToString());
+
+                    foreach (string name in cellList)
+                    {
+                        if (currentCellNamed != name)
+                        {
+                            int colNum = columNumber(name[0].ToString());
+                            int rowNum = Int32.Parse(name.Substring(1));
+
+
+                            panel.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(name).ToString());
+                        }
+                    }
+
+                    // callback
+                    // display the top- right content box
+                    window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
                 }
+            
+            catch(Formulas.FormulaFormatException)
+            {
+                    window.DialogBoxFormulaFormat();
             }
+            
+            catch(CircularException)
+             {
+                    window.DialogBoxCircular();
+             }
 
-            // callback
-            // display the top- right content box
-            window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
         }
 
             else

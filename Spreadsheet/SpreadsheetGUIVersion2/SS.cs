@@ -153,5 +153,14 @@ namespace SpreadsheetGUIVersion2
 
         }
 
+        public void DialogBoxFormulaFormat()
+        {
+            MessageBox.Show("The formula you entered is not valid");
+        }
+
+        public void DialogBoxCircular()
+        {
+            MessageBox.Show("The formula you entered creates a circular error.");
+        }
     }
 }

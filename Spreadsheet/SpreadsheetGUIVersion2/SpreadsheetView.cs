@@ -28,6 +28,8 @@ namespace SpreadsheetGUIVersion2
 
         void DialogBoxOFNoCellIsSelected();
 
+        void DialogBoxFormulaFormat();
 
+        void DialogBoxCircular();
     }
 }
