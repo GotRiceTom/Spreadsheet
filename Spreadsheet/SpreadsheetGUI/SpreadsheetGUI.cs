@@ -76,6 +76,11 @@ namespace SpreadsheetGUI
         /// </summary>
         private void displaySelection(SpreadsheetPanel sender)
 		{
+
+            if (sender.Equals( Keys.Down))
+            {
+                sender.SetSelection(col, row + 1);
+            }
 			
 			sender.GetSelection(out col, out row);
 
@@ -116,6 +121,7 @@ namespace SpreadsheetGUI
         private void NewSS_Click_Click(object sender, EventArgs e)
         {
             SpreadsheetContext.GetContext().RunNew();
+            
         }
 
 
@@ -133,6 +139,11 @@ namespace SpreadsheetGUI
             mainSpreadsheet.SetContentsOfCell(cellNamed, getContentEdit);
 
             displayCellTextBoxes(cellNamed);
+
+        }
+
+        private void displaySelection(object sender, KeyEventArgs e)
+        {
 
         }
 

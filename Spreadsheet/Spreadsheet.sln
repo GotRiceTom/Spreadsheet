@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PS6GradingTests", "PS6Gradi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "SpreadsheetGUI\SpreadsheetGUI.csproj", "{3C684A7D-6EB9-404F-B53E-E4D32E19DB79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUIVersion2", "SpreadsheetGUIVersion2\SpreadsheetGUIVersion2.csproj", "{FC40C4D5-0C6A-442F-91CC-02293F963418}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,14 @@ Global
 		{3C684A7D-6EB9-404F-B53E-E4D32E19DB79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C684A7D-6EB9-404F-B53E-E4D32E19DB79}.Release|x86.ActiveCfg = Release|Any CPU
 		{3C684A7D-6EB9-404F-B53E-E4D32E19DB79}.Release|x86.Build.0 = Release|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Debug|x86.Build.0 = Debug|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Release|x86.ActiveCfg = Release|Any CPU
+		{FC40C4D5-0C6A-442F-91CC-02293F963418}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

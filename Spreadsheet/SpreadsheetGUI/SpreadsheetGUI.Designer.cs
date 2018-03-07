@@ -236,6 +236,7 @@
             this.spreadsheetMainPanel.Size = new System.Drawing.Size(968, 410);
             this.spreadsheetMainPanel.TabIndex = 4;
             this.spreadsheetMainPanel.SelectionChanged += new SSGui.SelectionChangedHandler(this.displaySelection);
+            this.spreadsheetMainPanel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.displaySelection);
             // 
             // panel3
             // 
