@@ -76,7 +76,7 @@ namespace SpreadsheetGUIVersion2
 
         public void DialogBoxOFNoCellIsSelected()
         {
-            MessageBox.Show("Please select a cell before before click change");
+            MessageBox.Show("Please select a cell to change before attempting to enter data.");
         }
 
         
@@ -155,12 +155,12 @@ namespace SpreadsheetGUIVersion2
 
         public void DialogBoxFormulaFormat()
         {
-            MessageBox.Show("The formula you entered is not valid");
+            MessageBox.Show("That formula is not valid.");
         }
 
         public void DialogBoxCircular()
         {
-            MessageBox.Show("The formula you entered creates a circular error.");
+            MessageBox.Show("That formula creates a circular error.");
         }
     }
 }

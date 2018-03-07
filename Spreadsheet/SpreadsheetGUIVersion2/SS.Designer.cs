@@ -127,21 +127,21 @@
             // 
             // CellValueText
             // 
-            this.CellValueText.Location = new System.Drawing.Point(681, 78);
+            this.CellValueText.Location = new System.Drawing.Point(644, 75);
             this.CellValueText.Name = "CellValueText";
             this.CellValueText.Size = new System.Drawing.Size(150, 20);
             this.CellValueText.TabIndex = 4;
             // 
             // CellContentText
             // 
-            this.CellContentText.Location = new System.Drawing.Point(681, 48);
+            this.CellContentText.Location = new System.Drawing.Point(644, 45);
             this.CellContentText.Name = "CellContentText";
             this.CellContentText.Size = new System.Drawing.Size(150, 20);
             this.CellContentText.TabIndex = 3;
             // 
             // CellNameText
             // 
-            this.CellNameText.Location = new System.Drawing.Point(681, 13);
+            this.CellNameText.Location = new System.Drawing.Point(644, 13);
             this.CellNameText.Name = "CellNameText";
             this.CellNameText.Size = new System.Drawing.Size(150, 20);
             this.CellNameText.TabIndex = 2;
@@ -167,7 +167,7 @@
             // CellNameLabel
             // 
             this.CellNameLabel.AutoSize = true;
-            this.CellNameLabel.Location = new System.Drawing.Point(574, 23);
+            this.CellNameLabel.Location = new System.Drawing.Point(574, 16);
             this.CellNameLabel.Name = "CellNameLabel";
             this.CellNameLabel.Size = new System.Drawing.Size(55, 13);
             this.CellNameLabel.TabIndex = 5;
@@ -177,7 +177,7 @@
             // 
             this.ChangeButton.Location = new System.Drawing.Point(4, 37);
             this.ChangeButton.Name = "ChangeButton";
-            this.ChangeButton.Size = new System.Drawing.Size(86, 41);
+            this.ChangeButton.Size = new System.Drawing.Size(78, 41);
             this.ChangeButton.TabIndex = 1;
             this.ChangeButton.Text = "Change Content";
             this.ChangeButton.UseVisualStyleBackColor = true;
