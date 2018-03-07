@@ -36,12 +36,12 @@
             this.CenterPanel = new System.Windows.Forms.Panel();
             this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
             this.TopPanelOfMain = new System.Windows.Forms.Panel();
+            this.CellValueText = new System.Windows.Forms.TextBox();
+            this.CellContentText = new System.Windows.Forms.TextBox();
+            this.CellNameText = new System.Windows.Forms.TextBox();
             this.CellValueLabel = new System.Windows.Forms.Label();
             this.CellContentLabel = new System.Windows.Forms.Label();
             this.CellNameLabel = new System.Windows.Forms.Label();
-            this.CellValueText = new System.Windows.Forms.TextBox();
-            this.CellContentTex = new System.Windows.Forms.TextBox();
-            this.CellNameText = new System.Windows.Forms.TextBox();
             this.ChangeButton = new System.Windows.Forms.Button();
             this.ContentEditTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
@@ -72,14 +72,14 @@
             // newWindow
             // 
             this.newWindow.Name = "newWindow";
-            this.newWindow.Size = new System.Drawing.Size(152, 22);
+            this.newWindow.Size = new System.Drawing.Size(103, 22);
             this.newWindow.Text = "New";
             this.newWindow.Click += new System.EventHandler(this.NewSpreadsheet_Click);
             // 
             // closeWindow
             // 
             this.closeWindow.Name = "closeWindow";
-            this.closeWindow.Size = new System.Drawing.Size(152, 22);
+            this.closeWindow.Size = new System.Drawing.Size(103, 22);
             this.closeWindow.Text = "Close";
             this.closeWindow.Click += new System.EventHandler(this.CloseSpreadsheet_Click);
             // 
@@ -106,11 +106,12 @@
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
             this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 504);
             this.spreadsheetPanel1.TabIndex = 3;
+            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.display_selectionchange);
             // 
             // TopPanelOfMain
             // 
             this.TopPanelOfMain.Controls.Add(this.CellValueText);
-            this.TopPanelOfMain.Controls.Add(this.CellContentTex);
+            this.TopPanelOfMain.Controls.Add(this.CellContentText);
             this.TopPanelOfMain.Controls.Add(this.CellNameText);
             this.TopPanelOfMain.Controls.Add(this.CellValueLabel);
             this.TopPanelOfMain.Controls.Add(this.CellContentLabel);
@@ -123,6 +124,27 @@
             this.TopPanelOfMain.Name = "TopPanelOfMain";
             this.TopPanelOfMain.Size = new System.Drawing.Size(1139, 111);
             this.TopPanelOfMain.TabIndex = 2;
+            // 
+            // CellValueText
+            // 
+            this.CellValueText.Location = new System.Drawing.Point(681, 78);
+            this.CellValueText.Name = "CellValueText";
+            this.CellValueText.Size = new System.Drawing.Size(150, 20);
+            this.CellValueText.TabIndex = 4;
+            // 
+            // CellContentText
+            // 
+            this.CellContentText.Location = new System.Drawing.Point(681, 48);
+            this.CellContentText.Name = "CellContentText";
+            this.CellContentText.Size = new System.Drawing.Size(150, 20);
+            this.CellContentText.TabIndex = 3;
+            // 
+            // CellNameText
+            // 
+            this.CellNameText.Location = new System.Drawing.Point(681, 13);
+            this.CellNameText.Name = "CellNameText";
+            this.CellNameText.Size = new System.Drawing.Size(150, 20);
+            this.CellNameText.TabIndex = 2;
             // 
             // CellValueLabel
             // 
@@ -151,27 +173,6 @@
             this.CellNameLabel.TabIndex = 5;
             this.CellNameLabel.Text = "Cell Name";
             // 
-            // CellValueText
-            // 
-            this.CellValueText.Location = new System.Drawing.Point(681, 78);
-            this.CellValueText.Name = "CellValueText";
-            this.CellValueText.Size = new System.Drawing.Size(150, 20);
-            this.CellValueText.TabIndex = 4;
-            // 
-            // CellContentTex
-            // 
-            this.CellContentTex.Location = new System.Drawing.Point(681, 48);
-            this.CellContentTex.Name = "CellContentTex";
-            this.CellContentTex.Size = new System.Drawing.Size(150, 20);
-            this.CellContentTex.TabIndex = 3;
-            // 
-            // CellNameText
-            // 
-            this.CellNameText.Location = new System.Drawing.Point(681, 13);
-            this.CellNameText.Name = "CellNameText";
-            this.CellNameText.Size = new System.Drawing.Size(150, 20);
-            this.CellNameText.TabIndex = 2;
-            // 
             // ChangeButton
             // 
             this.ChangeButton.Location = new System.Drawing.Point(4, 37);
@@ -180,6 +181,7 @@
             this.ChangeButton.TabIndex = 1;
             this.ChangeButton.Text = "Change Content";
             this.ChangeButton.UseVisualStyleBackColor = true;
+            this.ChangeButton.Click += new System.EventHandler(this.ChangeButton_Click);
             // 
             // ContentEditTextBox
             // 
@@ -220,7 +222,7 @@
         private System.Windows.Forms.Label CellContentLabel;
         private System.Windows.Forms.Label CellNameLabel;
         private System.Windows.Forms.TextBox CellValueText;
-        private System.Windows.Forms.TextBox CellContentTex;
+        private System.Windows.Forms.TextBox CellContentText;
         private System.Windows.Forms.TextBox CellNameText;
         private System.Windows.Forms.Button ChangeButton;
         private System.Windows.Forms.TextBox ContentEditTextBox;
