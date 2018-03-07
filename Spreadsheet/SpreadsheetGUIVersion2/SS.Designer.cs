@@ -189,7 +189,6 @@
             this.ContentEditTextBox.Name = "ContentEditTextBox";
             this.ContentEditTextBox.Size = new System.Drawing.Size(470, 20);
             this.ContentEditTextBox.TabIndex = 0;
-         
             // 
             // Spreadsheet_V2
             // 
@@ -199,7 +198,7 @@
             this.Controls.Add(this.CenterPanel);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Spreadsheet_V2";
-            this.Text = "Cell Name";
+            this.Text = "Spreadsheet";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.CenterPanel.ResumeLayout(false);
