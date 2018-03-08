@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using SS;
 using SSGui;
 
@@ -19,9 +21,9 @@ namespace SpreadsheetGUIVersion2
 
         private SpreadsheetPanel panel;
 
-      public SpreadsheetControllers(SpreadsheetView ViewInput)
+        public SpreadsheetControllers(SpreadsheetView ViewInput)
         {
-            
+
             this.window = ViewInput;
 
             MainSpreadsheet = new Spreadsheet();
@@ -30,6 +32,7 @@ namespace SpreadsheetGUIVersion2
             ViewInput.CloseEvent += HandleCloseWindow;
             ViewInput.SelectionChangeEvent += HandleDisplaySelection;
             ViewInput.ChangeButtonEvent += HandleChangeButton;
+            ViewInput.SaveEvent += HandleSave;
 
         }
 
@@ -54,23 +57,26 @@ namespace SpreadsheetGUIVersion2
             //combine colLetter and row to get the cell name
             string currentCellNamed = colLetter + "" + (row + 1);
 
-            window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed) );
+            window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
         }
 
         private void HandleChangeButton(string cellEditContent)
         {
-           if (panel != null) { 
-            panel.GetSelection(out int col, out int row);
-            //Get Letter of col
-            string colLetter = columLetters(col);
-
-            //combine colLetter and row to get the cell name
-            string currentCellNamed = colLetter + "" + (row + 1);
-
-            //set content
-            try
+            if (panel != null)
             {
-                HashSet<String> cellList = new HashSet<string>(MainSpreadsheet.SetContentsOfCell(currentCellNamed, cellEditContent));
+                panel.GetSelection(out int col, out int row);
+                //Get Letter of col
+                string colLetter = columLetters(col);
+
+                //combine colLetter and row to get the cell name
+                string currentCellNamed = colLetter + "" + (row + 1);
+
+                //set content
+                try
+                {
+                    //try adding the content to the spreadsheet
+                    // then get it's dependents
+                    HashSet<String> cellList = new HashSet<string>(MainSpreadsheet.SetContentsOfCell(currentCellNamed, cellEditContent));
 
 
                     panel.SetValue(col, row, MainSpreadsheet.GetCellValue(currentCellNamed).ToString());
@@ -87,29 +93,53 @@ namespace SpreadsheetGUIVersion2
                         }
                     }
 
-                    // callback
                     // display the top- right content box
                     window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
                 }
-            
-            catch(Formulas.FormulaFormatException)
-            {
-                    window.DialogBoxFormulaFormat();
-            }
-            
-            catch(CircularException)
-             {
-                    window.DialogBoxCircular();
-             }
 
-        }
+                catch (Formulas.FormulaFormatException)
+                {
+                    window.DialogBoxFormulaFormat();
+                }
+
+                catch (CircularException)
+                {
+                    window.DialogBoxCircular();
+                }
+
+            }
 
             else
             {
                 window.DialogBoxOFNoCellIsSelected();
             }
- }
+        }
 
+
+
+        private void HandleSave()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+
+
+            sfd.Filter = "Spreadsheet File |* .ss";
+
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = sfd.FileName;
+
+                System.IO.TextWriter writeFile = new StreamWriter(path);
+
+              
+
+                MainSpreadsheet.Save(writeFile);
+
+            }
+
+
+
+
+        }
 
 
 

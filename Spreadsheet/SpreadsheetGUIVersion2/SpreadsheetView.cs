@@ -11,7 +11,11 @@ namespace SpreadsheetGUIVersion2
 
         event Action CloseEvent;
 
+        event Action SaveEvent;
+
         event Action<string> ChangeButtonEvent;
+
+        
 
         event Action<SpreadsheetPanel> SelectionChangeEvent;
 

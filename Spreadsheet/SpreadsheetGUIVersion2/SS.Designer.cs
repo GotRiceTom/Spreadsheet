@@ -44,6 +44,8 @@
             this.CellNameLabel = new System.Windows.Forms.Label();
             this.ChangeButton = new System.Windows.Forms.Button();
             this.ContentEditTextBox = new System.Windows.Forms.TextBox();
+            this.SaveItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.CenterPanel.SuspendLayout();
             this.TopPanelOfMain.SuspendLayout();
@@ -64,7 +66,9 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWindow,
-            this.closeWindow});
+            this.closeWindow,
+            this.SaveItem,
+            this.openToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -72,14 +76,14 @@
             // newWindow
             // 
             this.newWindow.Name = "newWindow";
-            this.newWindow.Size = new System.Drawing.Size(103, 22);
+            this.newWindow.Size = new System.Drawing.Size(152, 22);
             this.newWindow.Text = "New";
             this.newWindow.Click += new System.EventHandler(this.NewSpreadsheet_Click);
             // 
             // closeWindow
             // 
             this.closeWindow.Name = "closeWindow";
-            this.closeWindow.Size = new System.Drawing.Size(103, 22);
+            this.closeWindow.Size = new System.Drawing.Size(152, 22);
             this.closeWindow.Text = "Close";
             this.closeWindow.Click += new System.EventHandler(this.CloseSpreadsheet_Click);
             // 
@@ -190,6 +194,19 @@
             this.ContentEditTextBox.Size = new System.Drawing.Size(470, 20);
             this.ContentEditTextBox.TabIndex = 0;
             // 
+            // SaveItem
+            // 
+            this.SaveItem.Name = "SaveItem";
+            this.SaveItem.Size = new System.Drawing.Size(152, 22);
+            this.SaveItem.Text = "Save";
+            this.SaveItem.Click += new System.EventHandler(this.SaveItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            // 
             // Spreadsheet_V2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -226,6 +243,8 @@
         private System.Windows.Forms.TextBox CellNameText;
         private System.Windows.Forms.Button ChangeButton;
         private System.Windows.Forms.TextBox ContentEditTextBox;
+        private System.Windows.Forms.ToolStripMenuItem SaveItem;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
     }
 }
 
