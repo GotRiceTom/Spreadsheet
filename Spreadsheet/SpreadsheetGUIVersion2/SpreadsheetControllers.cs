@@ -31,6 +31,7 @@ namespace SpreadsheetGUIVersion2
             if (filePath != null )
             {
 
+
                 using (System.IO.TextReader readFile = new StreamReader(filePath))
                 {
                     Regex reg = new Regex(@"^[A-z]+[1-9][0-9]*$");
@@ -42,7 +43,7 @@ namespace SpreadsheetGUIVersion2
                     {
                         int colNum = columNumber(currentName[0].ToString());
                         int rowNum = Int32.Parse(currentName.Substring(1));
-                        
+
                         window.DisplayValueOnPanel(colNum, rowNum - 1, MainSpreadsheet.GetCellContents(currentName), MainSpreadsheet.GetCellValue(currentName));
                     }
 
@@ -57,8 +58,6 @@ namespace SpreadsheetGUIVersion2
             panel = new SpreadsheetPanel();
 
 
-          
-
             ViewInput.NewEvent += HandleNewWindow;
             ViewInput.CloseEvent += HandleCloseWindow;
             ViewInput.SelectionChangeEvent += HandleDisplaySelection;
@@ -67,14 +66,10 @@ namespace SpreadsheetGUIVersion2
             ViewInput.FormClosingEvent += HandleSave;
             ViewInput.KeyArrowsEvent += HandleKeysArrow;
             ViewInput.OpenEvent += HandleOpen;
-            ViewInput.LoadPanelEvent += HandleLoad; 
+            
 
         }
 
-        private void HandleLoad(SpreadsheetPanel inputPanel)
-        {
-            panel = inputPanel;
-        }
 
         private void HandleOpen()
         {
@@ -238,10 +233,11 @@ namespace SpreadsheetGUIVersion2
         {
 
             if (MainSpreadsheet.Changed) { 
+
             SaveFileDialog sfd = new SaveFileDialog();
 
 
-            sfd.Filter = "Spreadsheet File |* .ss";
+            sfd.Filter = "Spreadsheet File (.ss) |* .ss ";
 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {

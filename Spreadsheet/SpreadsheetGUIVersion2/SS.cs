@@ -33,7 +33,7 @@ namespace SpreadsheetGUIVersion2
         public event Action<SpreadsheetPanel> SelectionChangeEvent;
 
         public event Action OpenEvent;
-        public event Action<SpreadsheetPanel> LoadPanelEvent;
+
 
 
         /// <summary>
@@ -211,13 +211,7 @@ namespace SpreadsheetGUIVersion2
             MessageBox.Show("That formula creates a circular error.");
         }
 
-        private void Spreadsheet_V2_Load(object sender, EventArgs e)
-        {
-            if (LoadPanelEvent != null)
-            {
-                LoadPanelEvent(spreadsheetPanel1);
-            }
-        }
+      
     }
 
 

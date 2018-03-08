@@ -22,7 +22,6 @@ namespace SpreadsheetGUIVersion2
 
         event Action <Keys> KeyArrowsEvent;
 
-        event Action<SpreadsheetPanel> LoadPanelEvent;
 
         
 

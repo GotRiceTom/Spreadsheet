@@ -218,7 +218,7 @@
             this.Name = "Spreadsheet_V2";
             this.Text = "Spreadsheet";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Spreadsheet_V2_FormClosing);
-            this.Load += new System.EventHandler(this.Spreadsheet_V2_Load);
+           
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Spreadsheet_V2_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
