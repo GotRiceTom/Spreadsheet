@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using SSGui;
 
 
@@ -13,7 +14,11 @@ namespace SpreadsheetGUIVersion2
 
         event Action SaveEvent;
 
+        event Action FormClosingEvent;
+
         event Action<string> ChangeButtonEvent;
+
+        event Action <Keys> KeyArrowsEvent;
 
         
 

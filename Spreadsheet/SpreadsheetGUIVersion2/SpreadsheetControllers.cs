@@ -25,7 +25,7 @@ namespace SpreadsheetGUIVersion2
         {
 
             this.window = ViewInput;
-
+            
             MainSpreadsheet = new Spreadsheet();
 
             ViewInput.NewEvent += HandleNewWindow;
@@ -33,6 +33,60 @@ namespace SpreadsheetGUIVersion2
             ViewInput.SelectionChangeEvent += HandleDisplaySelection;
             ViewInput.ChangeButtonEvent += HandleChangeButton;
             ViewInput.SaveEvent += HandleSave;
+            ViewInput.FormClosingEvent += HandleSave;
+            ViewInput.KeyArrowsEvent += HandleKeysArrow;
+
+        }
+
+        private void HandleKeysArrow(Keys obj)
+        {
+            if (panel != null) {
+                panel.GetSelection(out int col, out int row);
+
+                if (obj == Keys.Left)
+                {
+                    if (col != 0)
+                    {
+                        panel.SetSelection(col - 1, row);
+                        HandleDisplaySelection(panel);
+                    }
+
+                }
+
+                if (obj == Keys.Up)
+                {
+                    if (row != 0)
+                    {
+                        panel.SetSelection(col, row - 1);
+                        HandleDisplaySelection(panel);
+                    }
+
+                }
+
+                if (obj == Keys.Right)
+                {
+                    if (col != 25)
+                    {
+                        panel.SetSelection(col + 1, row);
+                        HandleDisplaySelection(panel);
+
+                    }
+
+                }
+
+                if (obj == Keys.Down)
+                {
+                    if (row != 98)
+                    {
+                        panel.SetSelection(col, row + 1);
+                        HandleDisplaySelection(panel);
+                    }
+
+                }
+
+            }
+
+
 
         }
 
@@ -119,6 +173,8 @@ namespace SpreadsheetGUIVersion2
 
         private void HandleSave()
         {
+
+            if (MainSpreadsheet.Changed) { 
             SaveFileDialog sfd = new SaveFileDialog();
 
 
@@ -126,19 +182,19 @@ namespace SpreadsheetGUIVersion2
 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+
+
+
                 string path = sfd.FileName;
 
-                System.IO.TextWriter writeFile = new StreamWriter(path);
+                using (System.IO.TextWriter writeFile = new StreamWriter(path))
+                {
+                    MainSpreadsheet.Save(writeFile);
+                }
 
-              
-
-                MainSpreadsheet.Save(writeFile);
 
             }
-
-
-
-
+         }
         }
 
 

@@ -15,14 +15,19 @@ namespace SpreadsheetGUIVersion2
             InitializeComponent();
             SetCellTextBoxToReadonly();
 
-        }
 
+            KeyPreview = true;
+        }
 
         public event Action NewEvent;
 
         public event Action CloseEvent;
 
         public event Action SaveEvent;
+
+        public event Action FormClosingEvent;
+
+         public  event Action<Keys> KeyArrowsEvent;
 
         public event Action<string> ChangeButtonEvent;
 
@@ -149,6 +154,7 @@ namespace SpreadsheetGUIVersion2
             }
         }
 
+
         private void SetCellTextBoxToReadonly()
         {
             //set the text box to be read only
@@ -171,6 +177,24 @@ namespace SpreadsheetGUIVersion2
         public void DialogBoxCircular()
         {
             MessageBox.Show("That formula creates a circular error.");
+        }
+
+        private void Spreadsheet_V2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (FormClosingEvent != null)
+            {
+                FormClosingEvent();
+            }
+        }
+
+        private void Spreadsheet_V2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (KeyArrowsEvent != null)
+            {
+                KeyArrowsEvent(e.KeyCode);
+                e.Handled = true;
+            }
+           
         }
     }
 }
