@@ -36,7 +36,6 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hellpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CenterPanel = new System.Windows.Forms.Panel();
-            this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
             this.TopPanelOfMain = new System.Windows.Forms.Panel();
             this.CellValueText = new System.Windows.Forms.TextBox();
             this.CellContentText = new System.Windows.Forms.TextBox();
@@ -46,6 +45,7 @@
             this.CellNameLabel = new System.Windows.Forms.Label();
             this.ChangeButton = new System.Windows.Forms.Button();
             this.ContentEditTextBox = new System.Windows.Forms.TextBox();
+            this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
             this.menuStrip1.SuspendLayout();
             this.CenterPanel.SuspendLayout();
             this.TopPanelOfMain.SuspendLayout();
@@ -116,15 +116,6 @@
             this.CenterPanel.Name = "CenterPanel";
             this.CenterPanel.Size = new System.Drawing.Size(1139, 615);
             this.CenterPanel.TabIndex = 1;
-            // 
-            // spreadsheetPanel1
-            // 
-            this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 111);
-            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 504);
-            this.spreadsheetPanel1.TabIndex = 3;
-            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.Display_selectionchange);
             // 
             // TopPanelOfMain
             // 
@@ -208,6 +199,15 @@
             this.ContentEditTextBox.Size = new System.Drawing.Size(470, 20);
             this.ContentEditTextBox.TabIndex = 0;
             // 
+            // spreadsheetPanel1
+            // 
+            this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 111);
+            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 504);
+            this.spreadsheetPanel1.TabIndex = 3;
+            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.Display_selectionchange);
+            // 
             // Spreadsheet_V2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -218,6 +218,7 @@
             this.Name = "Spreadsheet_V2";
             this.Text = "Spreadsheet";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Spreadsheet_V2_FormClosing);
+            this.Load += new System.EventHandler(this.Spreadsheet_V2_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Spreadsheet_V2_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

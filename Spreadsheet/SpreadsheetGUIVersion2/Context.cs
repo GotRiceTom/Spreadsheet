@@ -44,7 +44,7 @@ namespace SpreadsheetGUIVersion2
         {
             // Create the window
             Spreadsheet_V2 window = new Spreadsheet_V2();
-            new SpreadsheetControllers(window, null, null);
+            new SpreadsheetControllers(window, null);
 
             // One more form is running
             windowCount++;
@@ -56,12 +56,12 @@ namespace SpreadsheetGUIVersion2
             window.Show();
         }
 
-        public void RunNew(String FilePath, SpreadsheetPanel sender)
+        public void RunNew(String FilePath)
         {
             // Create the window
             Spreadsheet_V2 window = new Spreadsheet_V2();
 
-            new SpreadsheetControllers(window, FilePath, sender);
+            new SpreadsheetControllers(window, FilePath);
 
             // One more form is running
             windowCount++;
