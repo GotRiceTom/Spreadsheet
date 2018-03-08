@@ -8,23 +8,30 @@ namespace SpreadsheetGUIVersion2
     public partial class Spreadsheet_V2 : Form, SpreadsheetView
     {
 
-
         public Spreadsheet_V2()
         {
             InitializeComponent();
-            setCellTextBoxToReadonly();
+            SetCellTextBoxToReadonly();
 
+            KeyPreview = true;
         }
-
 
         public event Action NewEvent;
 
         public event Action CloseEvent;
 
+        public event Action SaveEvent;
+
+        public event Action FormClosingEvent;
+
+         public  event Action<Keys> KeyArrowsEvent;
+
         public event Action<string> ChangeButtonEvent;
 
         public event Action<SpreadsheetPanel> SelectionChangeEvent;
-        
+
+        public event Action OpenEvent;
+
 
         /// <summary>
         /// Close the App
@@ -39,7 +46,7 @@ namespace SpreadsheetGUIVersion2
         /// </summary>
         public void OpenNew()
         {
-            
+
             SpreadsheetContext.GetContext().RunNew();
         }
 
@@ -49,9 +56,9 @@ namespace SpreadsheetGUIVersion2
         /// <param name="sender"></param>
         /// <param name="content"></param>
         /// <param name="value"></param>
-        public void displayValueOnPanel(SpreadsheetPanel sender, Object content, Object value)
+        public void DisplayValueOnPanel(SpreadsheetPanel sender, Object content, Object value)
         {
-           // get coords
+            // get coords
             sender.GetSelection(out int col, out int row);
 
             // set value at coords
@@ -62,7 +69,7 @@ namespace SpreadsheetGUIVersion2
             CellValueText.Text = value.ToString();
         }
 
-        public void displaySelection(SpreadsheetPanel sender, string cellNamed, Object cellContent, Object cellValue)
+        public void DisplaySelection(string cellNamed, Object cellContent, Object cellValue)
         {
             //display the content on the contentEditBox
             ContentEditTextBox.Text = cellContent.ToString();
@@ -72,7 +79,21 @@ namespace SpreadsheetGUIVersion2
             CellValueText.Text = cellValue.ToString();
         }
 
-        
+
+        public void DialogBoxOFNoCellIsSelected()
+        {
+            MessageBox.Show("Please select a cell to change before attempting to enter data.");
+        }
+
+
+
+        private void SaveItem_Click(object sender, EventArgs e)
+        {
+            if(SaveEvent != null){
+
+                SaveEvent();
+            }
+        }
 
         /// <summary>
         /// Fired up the NewEvent
@@ -107,7 +128,7 @@ namespace SpreadsheetGUIVersion2
         /// Fired up the SelectionChangeEvent
         /// </summary>
         /// <param name="sender"></param>
-        private void display_selectionchange(SpreadsheetPanel sender)
+        private void Display_selectionchange(SpreadsheetPanel sender)
         {
 
             if (SelectionChangeEvent != null)
@@ -132,7 +153,8 @@ namespace SpreadsheetGUIVersion2
             }
         }
 
-        private void setCellTextBoxToReadonly()
+
+        private void SetCellTextBoxToReadonly()
         {
             //set the text box to be read only
             CellNameText.ReadOnly = true;
@@ -146,6 +168,45 @@ namespace SpreadsheetGUIVersion2
 
         }
 
-      
+        public void DialogBoxFormulaFormat()
+        {
+            MessageBox.Show("That formula is not valid.");
+        }
+
+        public void DialogBoxCircular()
+        {
+            MessageBox.Show("That formula creates a circular error.");
+        }
+
+        private void Spreadsheet_V2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (FormClosingEvent != null)
+            {
+                FormClosingEvent();
+            }
+        }
+
+        private void Spreadsheet_V2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (KeyArrowsEvent != null)
+            {
+                KeyArrowsEvent(e.KeyCode);
+                e.Handled = true;
+            }
+           
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (OpenEvent != null)
+            {
+                OpenEvent();
+            }
+        }
+
+        private void spreadsheetPanel1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

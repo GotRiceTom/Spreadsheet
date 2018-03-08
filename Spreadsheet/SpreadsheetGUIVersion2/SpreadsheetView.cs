@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using SSGui;
 
 
@@ -11,7 +12,19 @@ namespace SpreadsheetGUIVersion2
 
         event Action CloseEvent;
 
+        event Action SaveEvent;
+
+        event Action OpenEvent;
+
+        event Action FormClosingEvent;
+
         event Action<string> ChangeButtonEvent;
+
+        event Action <Keys> KeyArrowsEvent;
+
+        
+
+        
 
         event Action<SpreadsheetPanel> SelectionChangeEvent;
 
@@ -21,13 +34,15 @@ namespace SpreadsheetGUIVersion2
         void OpenNew();
 
 
-        void displaySelection(SpreadsheetPanel sender, string cellName, Object content, Object value);
+         void DisplaySelection(string cellName, Object content, Object value);
 
 
-        void displayValueOnPanel(SpreadsheetPanel sender, Object content, Object value);
+         void DisplayValueOnPanel(SpreadsheetPanel sender, Object content, Object value);
 
-        // a method to recalucate all the cells value on the grid panel
+        void DialogBoxOFNoCellIsSelected();
 
+        void DialogBoxFormulaFormat();
 
+        void DialogBoxCircular();
     }
 }

@@ -32,6 +32,8 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.closeWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hellpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CenterPanel = new System.Windows.Forms.Panel();
             this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
@@ -64,7 +66,9 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWindow,
-            this.closeWindow});
+            this.closeWindow,
+            this.SaveItem,
+            this.openToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -82,6 +86,20 @@
             this.closeWindow.Size = new System.Drawing.Size(103, 22);
             this.closeWindow.Text = "Close";
             this.closeWindow.Click += new System.EventHandler(this.CloseSpreadsheet_Click);
+            // 
+            // SaveItem
+            // 
+            this.SaveItem.Name = "SaveItem";
+            this.SaveItem.Size = new System.Drawing.Size(103, 22);
+            this.SaveItem.Text = "Save";
+            this.SaveItem.Click += new System.EventHandler(this.SaveItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // hellpToolStripMenuItem
             // 
@@ -106,7 +124,7 @@
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
             this.spreadsheetPanel1.Size = new System.Drawing.Size(1139, 504);
             this.spreadsheetPanel1.TabIndex = 3;
-            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.display_selectionchange);
+            this.spreadsheetPanel1.SelectionChanged += new SSGui.SelectionChangedHandler(this.Display_selectionchange);
             // 
             // TopPanelOfMain
             // 
@@ -127,21 +145,21 @@
             // 
             // CellValueText
             // 
-            this.CellValueText.Location = new System.Drawing.Point(681, 78);
+            this.CellValueText.Location = new System.Drawing.Point(644, 75);
             this.CellValueText.Name = "CellValueText";
             this.CellValueText.Size = new System.Drawing.Size(150, 20);
             this.CellValueText.TabIndex = 4;
             // 
             // CellContentText
             // 
-            this.CellContentText.Location = new System.Drawing.Point(681, 48);
+            this.CellContentText.Location = new System.Drawing.Point(644, 45);
             this.CellContentText.Name = "CellContentText";
             this.CellContentText.Size = new System.Drawing.Size(150, 20);
             this.CellContentText.TabIndex = 3;
             // 
             // CellNameText
             // 
-            this.CellNameText.Location = new System.Drawing.Point(681, 13);
+            this.CellNameText.Location = new System.Drawing.Point(644, 13);
             this.CellNameText.Name = "CellNameText";
             this.CellNameText.Size = new System.Drawing.Size(150, 20);
             this.CellNameText.TabIndex = 2;
@@ -167,7 +185,7 @@
             // CellNameLabel
             // 
             this.CellNameLabel.AutoSize = true;
-            this.CellNameLabel.Location = new System.Drawing.Point(574, 23);
+            this.CellNameLabel.Location = new System.Drawing.Point(574, 16);
             this.CellNameLabel.Name = "CellNameLabel";
             this.CellNameLabel.Size = new System.Drawing.Size(55, 13);
             this.CellNameLabel.TabIndex = 5;
@@ -177,7 +195,7 @@
             // 
             this.ChangeButton.Location = new System.Drawing.Point(4, 37);
             this.ChangeButton.Name = "ChangeButton";
-            this.ChangeButton.Size = new System.Drawing.Size(86, 41);
+            this.ChangeButton.Size = new System.Drawing.Size(78, 41);
             this.ChangeButton.TabIndex = 1;
             this.ChangeButton.Text = "Change Content";
             this.ChangeButton.UseVisualStyleBackColor = true;
@@ -198,7 +216,9 @@
             this.Controls.Add(this.CenterPanel);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Spreadsheet_V2";
-            this.Text = "Cell Name";
+            this.Text = "Spreadsheet";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Spreadsheet_V2_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Spreadsheet_V2_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.CenterPanel.ResumeLayout(false);
@@ -226,6 +246,8 @@
         private System.Windows.Forms.TextBox CellNameText;
         private System.Windows.Forms.Button ChangeButton;
         private System.Windows.Forms.TextBox ContentEditTextBox;
+        private System.Windows.Forms.ToolStripMenuItem SaveItem;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
     }
 }
 
