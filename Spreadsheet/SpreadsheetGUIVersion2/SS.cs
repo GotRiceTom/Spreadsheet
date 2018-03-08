@@ -8,11 +8,13 @@ namespace SpreadsheetGUIVersion2
     public partial class Spreadsheet_V2 : Form, SpreadsheetView
     {
 
+        
+
         public Spreadsheet_V2()
         {
             InitializeComponent();
             SetCellTextBoxToReadonly();
-
+           
             KeyPreview = true;
         }
 
@@ -24,13 +26,14 @@ namespace SpreadsheetGUIVersion2
 
         public event Action FormClosingEvent;
 
-         public  event Action<Keys> KeyArrowsEvent;
+        public  event Action<Keys> KeyArrowsEvent;
 
         public event Action<string> ChangeButtonEvent;
 
         public event Action<SpreadsheetPanel> SelectionChangeEvent;
 
         public event Action OpenEvent;
+
 
 
         /// <summary>
@@ -56,13 +59,13 @@ namespace SpreadsheetGUIVersion2
         /// <param name="sender"></param>
         /// <param name="content"></param>
         /// <param name="value"></param>
-        public void DisplayValueOnPanel(SpreadsheetPanel sender, Object content, Object value)
+        public void DisplayValueOnPanel(int col, int row, Object content, Object value)
         {
             // get coords
-            sender.GetSelection(out int col, out int row);
+           // spreadsheetPanel1.GetSelection(out int col, out int row);
 
             // set value at coords
-            sender.SetValue(col, row, value.ToString());
+            spreadsheetPanel1.SetValue(col, row, value.ToString());
 
             //Display the current cell's information
             CellContentText.Text = content.ToString();
@@ -74,6 +77,7 @@ namespace SpreadsheetGUIVersion2
             //display the content on the contentEditBox
             ContentEditTextBox.Text = cellContent.ToString();
 
+            //then top right box
             CellNameText.Text = cellNamed;
             CellContentText.Text = cellContent.ToString();
             CellValueText.Text = cellValue.ToString();
@@ -84,6 +88,7 @@ namespace SpreadsheetGUIVersion2
         {
             MessageBox.Show("Please select a cell to change before attempting to enter data.");
         }
+
 
 
 
@@ -154,29 +159,6 @@ namespace SpreadsheetGUIVersion2
         }
 
 
-        private void SetCellTextBoxToReadonly()
-        {
-            //set the text box to be read only
-            CellNameText.ReadOnly = true;
-            CellContentText.ReadOnly = true;
-            CellValueText.ReadOnly = true;
-
-            // set the text boxes to be gray
-            CellNameText.BackColor = System.Drawing.SystemColors.Window;
-            CellContentText.BackColor = System.Drawing.SystemColors.Window;
-            CellValueText.BackColor = System.Drawing.SystemColors.Window;
-
-        }
-
-        public void DialogBoxFormulaFormat()
-        {
-            MessageBox.Show("That formula is not valid.");
-        }
-
-        public void DialogBoxCircular()
-        {
-            MessageBox.Show("That formula creates a circular error.");
-        }
 
         private void Spreadsheet_V2_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -204,9 +186,33 @@ namespace SpreadsheetGUIVersion2
             }
         }
 
-        private void spreadsheetPanel1_Load(object sender, EventArgs e)
+
+        private void SetCellTextBoxToReadonly()
         {
+            //set the text box to be read only
+            CellNameText.ReadOnly = true;
+            CellContentText.ReadOnly = true;
+            CellValueText.ReadOnly = true;
+
+            // set the text boxes to be gray
+            CellNameText.BackColor = System.Drawing.SystemColors.Window;
+            CellContentText.BackColor = System.Drawing.SystemColors.Window;
+            CellValueText.BackColor = System.Drawing.SystemColors.Window;
 
         }
+
+        public void DialogBoxFormulaFormat()
+        {
+            MessageBox.Show("That formula is not valid.");
+        }
+
+        public void DialogBoxCircular()
+        {
+            MessageBox.Show("That formula creates a circular error.");
+        }
+
+      
     }
+
+
 }

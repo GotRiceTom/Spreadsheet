@@ -22,6 +22,7 @@ namespace SpreadsheetGUIVersion2
 
         event Action <Keys> KeyArrowsEvent;
 
+
         
 
         
@@ -37,7 +38,7 @@ namespace SpreadsheetGUIVersion2
          void DisplaySelection(string cellName, Object content, Object value);
 
 
-         void DisplayValueOnPanel(SpreadsheetPanel sender, Object content, Object value);
+         void DisplayValueOnPanel(int col, int row, Object content, Object value);
 
         void DialogBoxOFNoCellIsSelected();
 

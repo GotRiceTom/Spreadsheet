@@ -23,15 +23,14 @@ namespace SpreadsheetGUIVersion2
         private SpreadsheetPanel panel;
 
 
-        public SpreadsheetControllers(SpreadsheetView ViewInput, String filePath, SpreadsheetPanel sender)
+        public SpreadsheetControllers(SpreadsheetView ViewInput, String filePath)
         {
-
+            
             this.window = ViewInput;
 
-            if (filePath != null && sender != null)
+            if (filePath != null )
             {
 
-                panel = sender;
 
                 using (System.IO.TextReader readFile = new StreamReader(filePath))
                 {
@@ -45,8 +44,7 @@ namespace SpreadsheetGUIVersion2
                         int colNum = columNumber(currentName[0].ToString());
                         int rowNum = Int32.Parse(currentName.Substring(1));
 
-
-                        sender.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(currentName).ToString());
+                        window.DisplayValueOnPanel(colNum, rowNum - 1, MainSpreadsheet.GetCellContents(currentName), MainSpreadsheet.GetCellValue(currentName));
                     }
 
                 }
@@ -60,8 +58,6 @@ namespace SpreadsheetGUIVersion2
             panel = new SpreadsheetPanel();
 
 
-          
-
             ViewInput.NewEvent += HandleNewWindow;
             ViewInput.CloseEvent += HandleCloseWindow;
             ViewInput.SelectionChangeEvent += HandleDisplaySelection;
@@ -70,8 +66,10 @@ namespace SpreadsheetGUIVersion2
             ViewInput.FormClosingEvent += HandleSave;
             ViewInput.KeyArrowsEvent += HandleKeysArrow;
             ViewInput.OpenEvent += HandleOpen;
+            
 
         }
+
 
         private void HandleOpen()
         {
@@ -86,7 +84,7 @@ namespace SpreadsheetGUIVersion2
 
                 string path = openBox.FileName;
 
-                SpreadsheetContext.GetContext().RunNew(path, new SpreadsheetPanel());
+                SpreadsheetContext.GetContext().RunNew(path);
 
             }
         }
@@ -155,7 +153,7 @@ namespace SpreadsheetGUIVersion2
 
         private void HandleDisplaySelection(SpreadsheetPanel sender)
         {
-            SpreadsheetPanel temp = panel;
+           
 
             panel = sender;
 
@@ -203,6 +201,7 @@ namespace SpreadsheetGUIVersion2
 
 
                             panel.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(name).ToString());
+
                         }
                     }
 
@@ -234,10 +233,11 @@ namespace SpreadsheetGUIVersion2
         {
 
             if (MainSpreadsheet.Changed) { 
+
             SaveFileDialog sfd = new SaveFileDialog();
 
 
-            sfd.Filter = "Spreadsheet File |* .ss";
+            sfd.Filter = "Spreadsheet File (.ss) |* .ss ";
 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
