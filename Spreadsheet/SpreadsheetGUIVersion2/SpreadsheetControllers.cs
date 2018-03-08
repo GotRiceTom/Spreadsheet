@@ -46,7 +46,7 @@ namespace SpreadsheetGUIVersion2
                         int rowNum = Int32.Parse(currentName.Substring(1));
 
 
-                        panel.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(currentName).ToString());
+                        sender.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(currentName).ToString());
                     }
 
                 }
@@ -56,6 +56,8 @@ namespace SpreadsheetGUIVersion2
             {
                 MainSpreadsheet = new Spreadsheet();
             }
+
+            panel = new SpreadsheetPanel();
 
 
           
@@ -84,8 +86,7 @@ namespace SpreadsheetGUIVersion2
 
                 string path = openBox.FileName;
 
-                SpreadsheetContext.GetContext().RunNew(path, panel);
-
+                SpreadsheetContext.GetContext().RunNew(path, new SpreadsheetPanel());
 
             }
         }
@@ -154,14 +155,19 @@ namespace SpreadsheetGUIVersion2
 
         private void HandleDisplaySelection(SpreadsheetPanel sender)
         {
+            SpreadsheetPanel temp = panel;
+
             panel = sender;
-            sender.GetSelection(out int col, out int row);
+
+            panel.GetSelection(out int col, out int row);
 
             //Get Letter of col
             string colLetter = columLetters(col);
 
             //combine colLetter and row to get the cell name
             string currentCellNamed = colLetter + "" + (row + 1);
+
+           
 
             window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
         }

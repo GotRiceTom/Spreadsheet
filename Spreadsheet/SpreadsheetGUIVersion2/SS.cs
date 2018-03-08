@@ -8,13 +8,10 @@ namespace SpreadsheetGUIVersion2
     public partial class Spreadsheet_V2 : Form, SpreadsheetView
     {
 
-
-
         public Spreadsheet_V2()
         {
             InitializeComponent();
             SetCellTextBoxToReadonly();
-
 
             KeyPreview = true;
         }
@@ -205,6 +202,11 @@ namespace SpreadsheetGUIVersion2
             {
                 OpenEvent();
             }
+        }
+
+        private void spreadsheetPanel1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

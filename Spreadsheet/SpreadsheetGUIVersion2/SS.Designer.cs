@@ -32,6 +32,8 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.closeWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hellpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CenterPanel = new System.Windows.Forms.Panel();
             this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
@@ -44,8 +46,6 @@
             this.CellNameLabel = new System.Windows.Forms.Label();
             this.ChangeButton = new System.Windows.Forms.Button();
             this.ContentEditTextBox = new System.Windows.Forms.TextBox();
-            this.SaveItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.CenterPanel.SuspendLayout();
             this.TopPanelOfMain.SuspendLayout();
@@ -76,16 +76,30 @@
             // newWindow
             // 
             this.newWindow.Name = "newWindow";
-            this.newWindow.Size = new System.Drawing.Size(152, 22);
+            this.newWindow.Size = new System.Drawing.Size(103, 22);
             this.newWindow.Text = "New";
             this.newWindow.Click += new System.EventHandler(this.NewSpreadsheet_Click);
             // 
             // closeWindow
             // 
             this.closeWindow.Name = "closeWindow";
-            this.closeWindow.Size = new System.Drawing.Size(152, 22);
+            this.closeWindow.Size = new System.Drawing.Size(103, 22);
             this.closeWindow.Text = "Close";
             this.closeWindow.Click += new System.EventHandler(this.CloseSpreadsheet_Click);
+            // 
+            // SaveItem
+            // 
+            this.SaveItem.Name = "SaveItem";
+            this.SaveItem.Size = new System.Drawing.Size(103, 22);
+            this.SaveItem.Text = "Save";
+            this.SaveItem.Click += new System.EventHandler(this.SaveItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // hellpToolStripMenuItem
             // 
@@ -193,20 +207,6 @@
             this.ContentEditTextBox.Name = "ContentEditTextBox";
             this.ContentEditTextBox.Size = new System.Drawing.Size(470, 20);
             this.ContentEditTextBox.TabIndex = 0;
-            // 
-            // SaveItem
-            // 
-            this.SaveItem.Name = "SaveItem";
-            this.SaveItem.Size = new System.Drawing.Size(152, 22);
-            this.SaveItem.Text = "Save";
-            this.SaveItem.Click += new System.EventHandler(this.SaveItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // Spreadsheet_V2
             // 
