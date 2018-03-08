@@ -33,6 +33,8 @@ namespace SpreadsheetGUIVersion2
 
         public event Action<SpreadsheetPanel> SelectionChangeEvent;
 
+        public event Action OpenEvent;
+
 
         /// <summary>
         /// Close the App
@@ -195,6 +197,14 @@ namespace SpreadsheetGUIVersion2
                 e.Handled = true;
             }
            
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (OpenEvent != null)
+            {
+                OpenEvent();
+            }
         }
     }
 }

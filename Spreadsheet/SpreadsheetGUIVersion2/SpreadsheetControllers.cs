@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SS;
@@ -21,12 +22,43 @@ namespace SpreadsheetGUIVersion2
 
         private SpreadsheetPanel panel;
 
-        public SpreadsheetControllers(SpreadsheetView ViewInput)
+
+        public SpreadsheetControllers(SpreadsheetView ViewInput, String filePath, SpreadsheetPanel sender)
         {
 
             this.window = ViewInput;
-            
-            MainSpreadsheet = new Spreadsheet();
+
+            if (filePath != null && sender != null)
+            {
+
+                panel = sender;
+
+                using (System.IO.TextReader readFile = new StreamReader(filePath))
+                {
+                    Regex reg = new Regex(@"^[A-z]+[1-9][0-9]*$");
+
+                    MainSpreadsheet = new Spreadsheet(readFile, reg);
+
+                    ///iterate
+                    foreach (string currentName in MainSpreadsheet.GetNamesOfAllNonemptyCells())
+                    {
+                        int colNum = columNumber(currentName[0].ToString());
+                        int rowNum = Int32.Parse(currentName.Substring(1));
+
+
+                        panel.SetValue(colNum, rowNum - 1, MainSpreadsheet.GetCellValue(currentName).ToString());
+                    }
+
+                }
+
+            }
+            else
+            {
+                MainSpreadsheet = new Spreadsheet();
+            }
+
+
+          
 
             ViewInput.NewEvent += HandleNewWindow;
             ViewInput.CloseEvent += HandleCloseWindow;
@@ -35,7 +67,27 @@ namespace SpreadsheetGUIVersion2
             ViewInput.SaveEvent += HandleSave;
             ViewInput.FormClosingEvent += HandleSave;
             ViewInput.KeyArrowsEvent += HandleKeysArrow;
+            ViewInput.OpenEvent += HandleOpen;
 
+        }
+
+        private void HandleOpen()
+        {
+            OpenFileDialog openBox = new OpenFileDialog();
+
+
+            openBox.Filter = "Spreadsheet File |* .ss";
+
+            if (openBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+
+
+                string path = openBox.FileName;
+
+                SpreadsheetContext.GetContext().RunNew(path, panel);
+
+
+            }
         }
 
         private void HandleKeysArrow(Keys obj)
@@ -119,6 +171,7 @@ namespace SpreadsheetGUIVersion2
             if (panel != null)
             {
                 panel.GetSelection(out int col, out int row);
+
                 //Get Letter of col
                 string colLetter = columLetters(col);
 

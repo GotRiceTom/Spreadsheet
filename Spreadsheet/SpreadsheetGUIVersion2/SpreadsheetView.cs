@@ -14,11 +14,15 @@ namespace SpreadsheetGUIVersion2
 
         event Action SaveEvent;
 
+        event Action OpenEvent;
+
         event Action FormClosingEvent;
 
         event Action<string> ChangeButtonEvent;
 
         event Action <Keys> KeyArrowsEvent;
+
+        
 
         
 
