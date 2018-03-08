@@ -24,7 +24,7 @@ namespace SpreadsheetGUIVersion2
 
         public event Action FormClosingEvent;
 
-         public  event Action<Keys> KeyArrowsEvent;
+        public  event Action<Keys> KeyArrowsEvent;
 
         public event Action<string> ChangeButtonEvent;
 
@@ -204,9 +204,5 @@ namespace SpreadsheetGUIVersion2
             }
         }
 
-        private void spreadsheetPanel1_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }
