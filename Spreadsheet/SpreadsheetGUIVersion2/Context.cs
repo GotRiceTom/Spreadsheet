@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SSGui;
 
-namespace SpreadsheetGUIVersion2
+namespace SpreadsheetGUI
 {
     class SpreadsheetContext : ApplicationContext
     {

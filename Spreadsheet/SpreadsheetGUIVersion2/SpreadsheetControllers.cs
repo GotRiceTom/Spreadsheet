@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SS;
 using SSGui;
+using Formulas;
 
 
-namespace SpreadsheetGUIVersion2
+namespace SpreadsheetGUI
 {
     public class SpreadsheetControllers
     {
@@ -22,10 +23,16 @@ namespace SpreadsheetGUIVersion2
 
         private SpreadsheetPanel panel;
 
+        private string FilePath;
+
+        public Boolean ReachedSaved { get; private set; }
+
 
         public SpreadsheetControllers(SpreadsheetView ViewInput, String filePath)
         {
-            
+            //for code coverage purpose
+            ReachedSaved = false;
+
             this.window = ViewInput;
 
             if (filePath != null )
@@ -62,27 +69,39 @@ namespace SpreadsheetGUIVersion2
             ViewInput.CloseEvent += HandleCloseWindow;
             ViewInput.SelectionChangeEvent += HandleDisplaySelection;
             ViewInput.ChangeButtonEvent += HandleChangeButton;
-            ViewInput.SaveEvent += HandleSave;
-            ViewInput.FormClosingEvent += HandleSave;
+            ViewInput.SaveToEvent += HandleSaveTo;
+            ViewInput.FormClosingEvent += HandleSaveTo;
             ViewInput.KeyArrowsEvent += HandleKeysArrow;
             ViewInput.OpenEvent += HandleOpen;
+            ViewInput.SaveEvent += HandleSave;
+            ViewInput.HelpEvent += HandleHelp;
             
 
         }
 
 
+
+
+        private void HandleHelp()
+        {
+            window.openHelp();
+        }
+
         private void HandleOpen()
         {
+            ReachedSaved = true;
             OpenFileDialog openBox = new OpenFileDialog();
 
 
-            openBox.Filter = "Spreadsheet File |* .ss";
+            openBox.Filter = "Spreadsheet File (.ss) |* .ss| Text file (.txt) |* .txt|All files (*.*)|*.* ";
 
             if (openBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
 
 
                 string path = openBox.FileName;
+
+                FilePath = path;
 
                 SpreadsheetContext.GetContext().RunNew(path);
 
@@ -96,6 +115,8 @@ namespace SpreadsheetGUIVersion2
 
                 if (obj == Keys.Left)
                 {
+                    ReachedSaved = true;
+
                     if (col != 0)
                     {
                         panel.SetSelection(col - 1, row);
@@ -106,6 +127,8 @@ namespace SpreadsheetGUIVersion2
 
                 if (obj == Keys.Up)
                 {
+                    ReachedSaved = true;
+
                     if (row != 0)
                     {
                         panel.SetSelection(col, row - 1);
@@ -116,6 +139,8 @@ namespace SpreadsheetGUIVersion2
 
                 if (obj == Keys.Right)
                 {
+                    ReachedSaved = true;
+
                     if (col != 25)
                     {
                         panel.SetSelection(col + 1, row);
@@ -127,6 +152,8 @@ namespace SpreadsheetGUIVersion2
 
                 if (obj == Keys.Down)
                 {
+                    ReachedSaved = true;
+
                     if (row != 98)
                     {
                         panel.SetSelection(col, row + 1);
@@ -153,7 +180,7 @@ namespace SpreadsheetGUIVersion2
 
         private void HandleDisplaySelection(SpreadsheetPanel sender)
         {
-           
+            string temp = "="; 
 
             panel = sender;
 
@@ -165,9 +192,17 @@ namespace SpreadsheetGUIVersion2
             //combine colLetter and row to get the cell name
             string currentCellNamed = colLetter + "" + (row + 1);
 
-           
+            if (MainSpreadsheet.GetCellContents(currentCellNamed) is Formula)
+            {
+                temp += MainSpreadsheet.GetCellContents(currentCellNamed).ToString();
 
-            window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
+                window.DisplaySelection(currentCellNamed, temp, MainSpreadsheet.GetCellValue(currentCellNamed));
+            }
+            else
+            {
+                window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed).ToString(), MainSpreadsheet.GetCellValue(currentCellNamed));
+            }
+           
         }
 
         private void HandleChangeButton(string cellEditContent)
@@ -206,7 +241,7 @@ namespace SpreadsheetGUIVersion2
                     }
 
                     // display the top- right content box
-                    window.DisplaySelection(currentCellNamed, MainSpreadsheet.GetCellContents(currentCellNamed), MainSpreadsheet.GetCellValue(currentCellNamed));
+                    window.DisplaySelection(currentCellNamed, cellEditContent, MainSpreadsheet.GetCellValue(currentCellNamed));
                 }
 
                 catch (Formulas.FormulaFormatException)
@@ -229,15 +264,15 @@ namespace SpreadsheetGUIVersion2
 
 
 
-        private void HandleSave()
+        private void HandleSaveTo()
         {
-
-            if (MainSpreadsheet.Changed) { 
+           
+            ReachedSaved = true;
 
             SaveFileDialog sfd = new SaveFileDialog();
 
 
-            sfd.Filter = "Spreadsheet File (.ss) |* .ss ";
+            sfd.Filter = "Spreadsheet File (.ss) |* .ss| Text file (.txt) |* .txt|All files (*.*)|*.* ";
 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -246,14 +281,45 @@ namespace SpreadsheetGUIVersion2
 
                 string path = sfd.FileName;
 
+                FilePath = path;
+
                 using (System.IO.TextWriter writeFile = new StreamWriter(path))
                 {
                     MainSpreadsheet.Save(writeFile);
                 }
 
 
+
             }
-         }
+        
+        
+         
+ }
+
+
+
+        private void HandleSave()
+        {
+            
+            SaveFileDialog sfd = new SaveFileDialog();
+
+            ReachedSaved = true;
+
+            sfd.Filter = "Spreadsheet File (.ss) |* .ss| Text file (.txt) |* .txt|All files (*.*)|*.* ";
+
+            if (FilePath == null)
+            {
+                HandleSaveTo();
+            }
+            else
+            {
+                using (System.IO.TextWriter writeFile = new StreamWriter(FilePath))
+                {
+                    MainSpreadsheet.Save(writeFile);
+                }
+            }
+            
+
         }
 
 

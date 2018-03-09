@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using SSGui;
 
 
-namespace SpreadsheetGUIVersion2
+namespace SpreadsheetGUI
 {
     public interface SpreadsheetView
     {
@@ -11,6 +11,8 @@ namespace SpreadsheetGUIVersion2
         event Action NewEvent;
 
         event Action CloseEvent;
+
+        event Action SaveToEvent;
 
         event Action SaveEvent;
 
@@ -21,6 +23,8 @@ namespace SpreadsheetGUIVersion2
         event Action<string> ChangeButtonEvent;
 
         event Action <Keys> KeyArrowsEvent;
+
+        event Action HelpEvent;
 
 
         
@@ -33,6 +37,8 @@ namespace SpreadsheetGUIVersion2
         void DoClose();
 
         void OpenNew();
+
+        void openHelp();
 
 
          void DisplaySelection(string cellName, Object content, Object value);
