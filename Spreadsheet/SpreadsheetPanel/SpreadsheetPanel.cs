@@ -13,6 +13,7 @@ namespace SSGui
     /// </summary>
     public delegate void SelectionChangedHandler(SpreadsheetPanel sender);
 
+
     /// <summary>
     /// A panel that displays a spreadsheet with 26 columns (labeled A-Z) and 99 rows
     /// (labeled 1-99).  Each cell on the grid can display a non-editable string.  One 
