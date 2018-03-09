@@ -37,7 +37,7 @@ namespace SpreadsheetUnitTest
         /// Testing arrow keys pressed DOWN
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
+       // [ExpectedException(typeof(NotImplementedException))]
         public void TestArrowKeysDown()
         {
             ControllerStub stub = new ControllerStub();
@@ -81,7 +81,7 @@ namespace SpreadsheetUnitTest
         /// Testing arrow keys pressed RIGHT
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
+       // [ExpectedException(typeof(NotImplementedException))]
         public void TestArrowKeysRight()
         {
             ControllerStub stub = new ControllerStub();
@@ -115,5 +115,17 @@ namespace SpreadsheetUnitTest
             stub.FireOpenEvent();
             Assert.IsTrue(controller.ReachedSaved);
         }
+
+
+        [TestMethod]
+        public void TestChange()
+        {
+            ControllerStub stub = new ControllerStub();
+
+            SpreadsheetControllers controller = new SpreadsheetControllers(stub, null);
+            stub.FireOpenEvent();
+            Assert.IsTrue(controller.ReachedSaved);
+        }
+
     }
 }

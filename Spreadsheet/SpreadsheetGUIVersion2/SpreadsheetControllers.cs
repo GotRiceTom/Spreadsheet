@@ -207,6 +207,8 @@ namespace SpreadsheetGUI
 
         private void HandleChangeButton(string cellEditContent)
         {
+            ReachedSaved = true;
+
             if (panel != null)
             {
                 panel.GetSelection(out int col, out int row);

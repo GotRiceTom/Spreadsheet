@@ -40,6 +40,14 @@ namespace SpreadsheetUnitTest
             }
         }
 
+        public void FireChangeButton()
+        {
+            if (ChangeButtonEvent != null)
+            {
+                ChangeButtonEvent("10");
+            }
+        }
+
 
         public void FireCloseEvent()
         {
@@ -106,7 +114,7 @@ namespace SpreadsheetUnitTest
 
         public void DisplaySelection(string cellName, object content, object value)
         {
-            throw new NotImplementedException();
+           
         }
 
         public void DisplayValueOnPanel(int col, int row, object content, object value)
