@@ -276,7 +276,7 @@ namespace SpreadsheetGUI
             MessageBox.Show("Welcome to Tom and Eric's Spectacular Spreadsheet, brought to you by bits-please." + Environment.NewLine + Environment.NewLine +
              " - To start editing the spreadsheet, you must first click on a cell, then you can use the arrow keys or continue clicking to change cells." + Environment.NewLine + Environment.NewLine +
              " - The contents, name, and value of the current cell is dsplayed in the top right." + Environment.NewLine + Environment.NewLine +
-             " - To enter data into a cell, click on the large bar on the top, enter your data, and click 'Change Value'" + Environment.NewLine + Environment.NewLine +
+             " - To enter data into a cell, click on the large bar on the top, enter your data, and click 'Change Content'" + Environment.NewLine + Environment.NewLine +
              " - You can open a new blank Spreadsheet by clicking File -> New, or you can open an existing sheet with File -> Open." + Environment.NewLine + Environment.NewLine +
              " - You can save your spreadsheet using File -> Save or File -> Save To" + Environment.NewLine + Environment.NewLine +
              " - 'Save' will automatically save to the last place that the current spreadsheet was saved to." + Environment.NewLine + Environment.NewLine +
