@@ -2,12 +2,13 @@
 using System.Windows.Forms;
 using SSGui;
 
-
+/// <summary>
+/// This is the interface that we use for the design. It implements all of these methods and events.
+/// </summary>
 namespace SpreadsheetGUI
 {
     public interface SpreadsheetView
     {
-
         event Action NewEvent;
 
         event Action CloseEvent;
@@ -26,13 +27,7 @@ namespace SpreadsheetGUI
 
         event Action HelpEvent;
 
-
-        
-
-        
-
         event Action<SpreadsheetPanel> SelectionChangeEvent;
-
 
         void DoClose();
 
@@ -40,11 +35,9 @@ namespace SpreadsheetGUI
 
         void openHelp();
 
+        void DisplaySelection(string cellName, Object content, Object value);
 
-         void DisplaySelection(string cellName, Object content, Object value);
-
-
-         void DisplayValueOnPanel(int col, int row, Object content, Object value);
+        void DisplayValueOnPanel(int col, int row, Object content, Object value);
 
         void DialogBoxOFNoCellIsSelected();
 

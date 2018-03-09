@@ -7,9 +7,6 @@ namespace SpreadsheetGUI
 {
     public partial class Spreadsheet_V2 : Form, SpreadsheetView
     {
-
-        
-
         public Spreadsheet_V2()
         {
             InitializeComponent();
@@ -87,7 +84,10 @@ namespace SpreadsheetGUI
             CellValueText.Text = cellValue.ToString();
         }
 
-
+        /// <summary>
+        /// The user needs to click on a cell before they can do anything after the spereadsheet is 
+        /// created. This is the reminder message that they see if they don't do that.
+        /// </summary>
         public void DialogBoxOFNoCellIsSelected()
         {
             MessageBox.Show("Please select a cell to change before attempting to enter data.");
@@ -95,7 +95,11 @@ namespace SpreadsheetGUI
 
 
 
-
+        /// <summary>
+        /// We fire the SaveToEvent if someone clicks the SaveTo button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveToItem_Click(object sender, EventArgs e)
         {
             if(SaveToEvent != null){
@@ -104,6 +108,11 @@ namespace SpreadsheetGUI
             }
         }
 
+        /// <summary>
+        /// We fire SaveEvent if someone clicks the Save button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Save_Click(object sender, EventArgs e)
         {
             if (SaveEvent != null)
@@ -170,8 +179,11 @@ namespace SpreadsheetGUI
             }
         }
 
-
-
+        /// <summary>
+        /// Form closing means they clicked the X and so we send the action to an event handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Spreadsheet_V2_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (FormClosingEvent != null)
@@ -180,6 +192,11 @@ namespace SpreadsheetGUI
             }
         }
 
+        /// <summary>
+        /// If a key is pressed down, we need to check if the key is one of the arrow keys. We send it to our KeyArrowEvent to do that.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Spreadsheet_V2_KeyDown(object sender, KeyEventArgs e)
         {
             if (KeyArrowsEvent != null)
@@ -190,6 +207,11 @@ namespace SpreadsheetGUI
            
         }
 
+        /// <summary>
+        /// If something on the menu line is clicked, open a dropbox or handle it accordingly.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (OpenEvent != null)
@@ -198,6 +220,11 @@ namespace SpreadsheetGUI
             }
         }
 
+        /// <summary>
+        /// Calls the right method if the help button is clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void helpEvent_Click(object sender, EventArgs e)
         {
        
@@ -208,7 +235,9 @@ namespace SpreadsheetGUI
             }
         }
 
-
+        /// <summary>
+        /// Making sure that our three boxes in the top right of our spreadsheet are read only.
+        /// </summary>
         private void SetCellTextBoxToReadonly()
         {
             //set the text box to be read only
@@ -223,16 +252,25 @@ namespace SpreadsheetGUI
 
         }
 
+        /// <summary>
+        /// If a user tries to enter in a formula with a bad variable, this is what they will see.
+        /// </summary>
         public void DialogBoxFormulaFormat()
         {
             MessageBox.Show("That formula is not valid.");
         }
 
+        /// <summary>
+        /// This is what the user will see if they enter something that results in a curcular exception
+        /// </summary>
         public void DialogBoxCircular()
         {
             MessageBox.Show("That formula creates a circular error.");
         }
 
+        /// <summary>
+        /// This is what the TAs will see when they click on the help button. This is the instructions for our spreadsheet.
+        /// </summary>
         public void openHelp()
         {
             MessageBox.Show("Welcome to Tom and Eric's Spectacular Spreadsheet, brought to you by bits-please." + Environment.NewLine + Environment.NewLine +

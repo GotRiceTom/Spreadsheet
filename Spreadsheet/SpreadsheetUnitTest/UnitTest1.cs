@@ -123,7 +123,7 @@ namespace SpreadsheetUnitTest
             ControllerStub stub = new ControllerStub();
 
             SpreadsheetControllers controller = new SpreadsheetControllers(stub, null);
-            stub.FireOpenEvent();
+            stub.FireChangeButton();
             Assert.IsTrue(controller.ReachedSaved);
         }
 
